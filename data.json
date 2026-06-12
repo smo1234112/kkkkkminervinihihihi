@@ -1,103 +1,23 @@
 {
- "updated": "2026-06-12 09:19",
- "market_date": "2026-06-11",
+ "updated": "2026-06-12 22:59",
+ "market_date": "2026-06-12",
  "summary": {
-  "open_count": 10,
-  "avg_ret": 2.8,
-  "closed_count": 5,
+  "open_count": 9,
+  "avg_ret": 19.13,
+  "closed_count": 14,
   "win_rate": 0.0,
-  "realized": -56.6
+  "realized": -191.4
  },
  "positions": [
-  {
-   "ticker": "KLAC",
-   "entry_date": "2026-06-11",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 241.16,
-   "stop": 221.87,
-   "last": 241.16,
-   "ret_pct": 0.0,
-   "days": 0
-  },
-  {
-   "ticker": "CASY",
-   "entry_date": "2026-06-10",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 915.6,
-   "stop": 842.35,
-   "last": 916.28,
-   "ret_pct": 0.07,
-   "days": 1
-  },
-  {
-   "ticker": "KIM",
-   "entry_date": "2026-06-10",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 25.38,
-   "stop": 23.35,
-   "last": 25.75,
-   "ret_pct": 1.46,
-   "days": 1
-  },
-  {
-   "ticker": "FRT",
-   "entry_date": "2026-06-09",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 124.44,
-   "stop": 114.48,
-   "last": 124.72,
-   "ret_pct": 0.23,
-   "days": 2
-  },
   {
    "ticker": "EXPD",
    "entry_date": "2026-06-08",
    "entry_time": "16:00 ET(종가)",
    "entry": 163.44,
    "stop": 150.36,
-   "last": 166.44,
-   "ret_pct": 1.84,
-   "days": 3
-  },
-  {
-   "ticker": "AMAT",
-   "entry_date": "2026-06-02",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 490.05,
-   "stop": 450.85,
-   "last": 552.64,
-   "ret_pct": 12.77,
-   "days": 7
-  },
-  {
-   "ticker": "MGM",
-   "entry_date": "2026-06-01",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 50.69,
-   "stop": 46.63,
-   "last": 47.22,
-   "ret_pct": -6.85,
-   "days": 8
-  },
-  {
-   "ticker": "HPE",
-   "entry_date": "2026-05-29",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 43.04,
-   "stop": 39.6,
-   "last": 46.8,
-   "ret_pct": 8.74,
-   "days": 9
-  },
-  {
-   "ticker": "FTNT",
-   "entry_date": "2026-05-29",
-   "entry_time": "16:00 ET(종가)",
-   "entry": 137.97,
-   "stop": 126.93,
-   "last": 145.06,
-   "ret_pct": 5.14,
-   "days": 9
+   "last": 166.62,
+   "ret_pct": 1.95,
+   "days": 4
   },
   {
    "ticker": "JBHT",
@@ -105,12 +25,163 @@
    "entry_time": "16:00 ET(종가)",
    "entry": 276.43,
    "stop": 254.32,
-   "last": 289.14,
-   "ret_pct": 4.6,
-   "days": 9
+   "last": 289.36,
+   "ret_pct": 4.68,
+   "days": 10
+  },
+  {
+   "ticker": "MRVL",
+   "entry_date": "2026-05-26",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 208.26,
+   "stop": 191.6,
+   "last": 279.7,
+   "ret_pct": 34.3,
+   "days": 13
+  },
+  {
+   "ticker": "MU",
+   "entry_date": "2026-05-26",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 895.88,
+   "stop": 824.21,
+   "last": 981.61,
+   "ret_pct": 9.57,
+   "days": 13
+  },
+  {
+   "ticker": "DELL",
+   "entry_date": "2026-05-22",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 295.19,
+   "stop": 271.57,
+   "last": 395.57,
+   "ret_pct": 34.01,
+   "days": 15
+  },
+  {
+   "ticker": "HPE",
+   "entry_date": "2026-05-22",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 37.58,
+   "stop": 34.57,
+   "last": 48.17,
+   "ret_pct": 28.18,
+   "days": 15
+  },
+  {
+   "ticker": "ROST",
+   "entry_date": "2026-05-22",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 234.35,
+   "stop": 215.6,
+   "last": 240.13,
+   "ret_pct": 2.47,
+   "days": 15
+  },
+  {
+   "ticker": "ARM",
+   "entry_date": "2026-05-20",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 256.73,
+   "stop": 236.19,
+   "last": 380.81,
+   "ret_pct": 48.33,
+   "days": 17
+  },
+  {
+   "ticker": "GS",
+   "entry_date": "2026-05-20",
+   "entry_time": "16:00 ET(종가)",
+   "entry": 977.81,
+   "stop": 899.59,
+   "last": 1062.75,
+   "ret_pct": 8.69,
+   "days": 17
   }
  ],
  "closed": [
+  {
+   "ticker": "ON",
+   "entry_date": "2026-05-26",
+   "exit_date": "2026-06-12",
+   "entry": 127.0,
+   "exit": 116.79,
+   "ret_pct": -8.04,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "CASY",
+   "entry_date": "2026-06-10",
+   "exit_date": "2026-05-21",
+   "entry": 915.6,
+   "exit": 824.8,
+   "ret_pct": -9.92,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "KLAC",
+   "entry_date": "2026-06-11",
+   "exit_date": "2026-05-15",
+   "entry": 241.16,
+   "exit": 180.2,
+   "ret_pct": -25.28,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "KIM",
+   "entry_date": "2026-06-10",
+   "exit_date": "2026-05-15",
+   "entry": 25.38,
+   "exit": 22.75,
+   "ret_pct": -10.36,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "FRT",
+   "entry_date": "2026-06-09",
+   "exit_date": "2026-05-15",
+   "entry": 124.44,
+   "exit": 113.16,
+   "ret_pct": -9.06,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "AMAT",
+   "entry_date": "2026-06-02",
+   "exit_date": "2026-05-15",
+   "entry": 490.05,
+   "exit": 436.08,
+   "ret_pct": -11.01,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "MGM",
+   "entry_date": "2026-06-01",
+   "exit_date": "2026-05-15",
+   "entry": 50.69,
+   "exit": 36.97,
+   "ret_pct": -27.07,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "FTNT",
+   "entry_date": "2026-05-29",
+   "exit_date": "2026-05-15",
+   "entry": 137.97,
+   "exit": 122.78,
+   "ret_pct": -11.01,
+   "reason": "손절 -8%"
+  },
+  {
+   "ticker": "HPE",
+   "entry_date": "2026-05-29",
+   "exit_date": "2026-05-15",
+   "entry": 43.04,
+   "exit": 33.1,
+   "ret_pct": -23.09,
+   "reason": "손절 -8%"
+  },
   {
    "ticker": "DDOG",
    "entry_date": "2026-05-29",
@@ -157,25 +228,24 @@
    "reason": "손절 -8%"
   }
  ],
- "today_buys": [
-  "KLAC"
- ],
+ "today_buys": [],
  "watch": [
   "AAPL",
   "ADI",
   "ADM",
-  "AES",
   "AIZ",
   "AKAM",
+  "AMAT",
   "AMD",
   "APH",
-  "ARM",
+  "ASML",
   "BAC",
   "BEN",
   "BG",
   "BIIB",
   "BNY",
   "C",
+  "CASY",
   "CAT",
   "CFG",
   "CHRW",
@@ -185,11 +255,11 @@
   "CRWD",
   "CSCO",
   "CSX",
+  "CVS",
   "D",
   "DAL",
+  "DD",
   "DDOG",
-  "DELL",
-  "DOV",
   "DVA",
   "EBAY",
   "EIX",
@@ -199,7 +269,6 @@
   "FDX",
   "FITB",
   "FIX",
-  "GL",
-  "GLW"
+  "FRT"
  ]
 }
