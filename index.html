@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>미너비니 전략실</title>
+<style>
+/* ───── TDS 토큰 (Toss Design System 준수) ───── */
+:root{
+  --blue50:#E8F3FF; --blue100:#C9E2FF; --blue500:#3182F6; --blue600:#2272EB;
+  --red50:#FFEEEE; --red500:#F04452;
+  --grey50:#F9FAFB; --grey100:#F2F4F6; --grey200:#E5E8EB; --grey300:#D1D6DB;
+  --grey500:#8B95A1; --grey600:#6B7684; --grey700:#4E5968; --grey800:#333D4B; --grey900:#191F28;
+  --greyOpacity100:rgba(2,32,71,.05); --greyOpacity200:rgba(2,32,71,.10);
+  --background:#FFFFFF; --greyBackground:#F2F4F6;
+  --radius-m:16px; --radius-s:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+     background:var(--greyBackground);color:var(--grey900);-webkit-font-smoothing:antialiased}
+.app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--background);padding-bottom:90px}
+
+/* 헤더 */
+.nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+     padding:14px 20px 10px;display:flex;align-items:center;justify-content:space-between}
+.nav h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.nav .upd{font-size:12px;color:var(--grey500);font-weight:500}
+
+/* 요약 카드 */
+.summary{margin:8px 20px 4px;background:var(--blue500);border-radius:var(--radius-m);
+         padding:22px 20px;color:#fff}
+.summary .label{font-size:13px;font-weight:500;opacity:.85}
+.summary .big{font-size:32px;font-weight:800;letter-spacing:-.5px;margin:4px 0 14px}
+.summary .row{display:flex;gap:0}
+.summary .cell{flex:1}
+.summary .cell .v{font-size:16px;font-weight:700}
+.summary .cell .k{font-size:12px;opacity:.8;margin-top:2px;font-weight:500}
+
+/* 오늘 신호 배너 */
+.banner{margin:12px 20px;background:var(--blue50);border-radius:var(--radius-s);
+        padding:14px 16px;font-size:14px;font-weight:600;color:var(--blue600);line-height:1.5}
+.banner.empty{background:var(--grey100);color:var(--grey600);font-weight:500}
+
+/* 세그먼티드 컨트롤 (TDS Segmented Control) */
+.seg{margin:14px 20px 6px;display:flex;background:var(--grey100);border-radius:12px;padding:3px}
+.seg button{flex:1;border:0;background:transparent;border-radius:10px;padding:9px 0;font-size:14px;
+            font-weight:600;color:var(--grey500);cursor:pointer;transition:all .18s}
+.seg button.on{background:#fff;color:var(--grey900);box-shadow:0 1px 4px var(--greyOpacity200)}
+
+/* ListRow (TDS 3-zone) */
+.list{padding:4px 8px}
+.lrow{display:flex;align-items:center;padding:14px 12px;border-radius:var(--radius-s);cursor:default}
+.lrow:active{background:var(--grey50)}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--grey100);display:flex;align-items:center;
+        justify-content:center;font-size:12px;font-weight:800;color:var(--grey700);margin-right:13px;flex:none;letter-spacing:-.5px}
+.avatar.buy{background:var(--blue50);color:var(--blue600)}
+.avatar.loss{background:var(--red50);color:var(--red500)}
+.mid{flex:1;min-width:0}
+.mid .t{font-size:16px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:6px}
+.mid .s{font-size:13px;color:var(--grey500);margin-top:3px;font-weight:500}
+.mid .s b{color:var(--red500);font-weight:600}
+.right{text-align:right;flex:none;margin-left:8px}
+.right .p{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.right .r{font-size:13px;font-weight:700;margin-top:3px}
+.pos{color:var(--red500)} .neg{color:var(--blue500)} .flat{color:var(--grey500)}
+.chip{font-size:11px;font-weight:700;background:var(--blue500);color:#fff;border-radius:6px;padding:2px 6px}
+.chip.grey{background:var(--grey200);color:var(--grey600)}
+
+/* 섹션 구분 */
+.sect{height:10px;background:var(--greyBackground)}
+.shead{padding:18px 20px 6px;font-size:14px;font-weight:700;color:var(--grey600)}
+.empty-box{padding:48px 20px;text-align:center;color:var(--grey500);font-size:14px;font-weight:500}
+.watch{padding:6px 20px 20px;display:flex;flex-wrap:wrap;gap:8px}
+.wtag{background:var(--grey100);color:var(--grey700);font-size:13px;font-weight:600;
+      border-radius:8px;padding:6px 10px}
+
+/* BottomCTA */
+.cta{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
+     padding:12px 20px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#fff 30%)}
+.cta button{width:100%;border:0;background:var(--blue500);color:#fff;font-size:16px;font-weight:700;
+            border-radius:14px;padding:16px 0;cursor:pointer;transition:background .15s}
+.cta button:active{background:var(--blue600)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(8px);background:var(--grey800);
+       color:#fff;font-size:14px;font-weight:600;border-radius:12px;padding:12px 18px;opacity:0;
+       transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.skel{height:64px;margin:8px 20px;border-radius:12px;background:linear-gradient(90deg,var(--grey100) 25%,var(--grey50) 50%,var(--grey100) 75%);
+      background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="nav">
+    <h1>미너비니 전략실</h1>
+    <span class="upd" id="upd"></span>
+  </div>
+
+  <div id="content">
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  </div>
+</div>
+
+<div class="cta"><button onclick="location.reload()">새로고침</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const fmt = n => n==null ? "-" : Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const sign = n => (n>0?"+":"") + Number(n).toFixed(2) + "%";
+const cls  = n => n>0 ? "pos" : (n<0 ? "neg" : "flat");
+let DATA=null, tab="hold";
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);}
+
+function rowHold(p){
+  return `<div class="lrow">
+    <div class="avatar ${p.ret_pct<0?'loss':'buy'}">${p.ticker.slice(0,4)}</div>
+    <div class="mid">
+      <div class="t">${p.ticker} ${p.entry_date===DATA.market_date?'<span class="chip">오늘 매수</span>':''}</div>
+      <div class="s">${p.entry_date} ${p.entry_time} · 매수 $${fmt(p.entry)} · <b>손절 $${fmt(p.stop)}</b></div>
+    </div>
+    <div class="right">
+      <div class="p">$${fmt(p.last)}</div>
+      <div class="r ${cls(p.ret_pct)}">${sign(p.ret_pct)}</div>
+    </div>
+  </div>`;
+}
+function rowClosed(c){
+  return `<div class="lrow">
+    <div class="avatar">${c.ticker.slice(0,4)}</div>
+    <div class="mid">
+      <div class="t">${c.ticker} <span class="chip grey">${c.reason}</span></div>
+      <div class="s">${c.entry_date} → ${c.exit_date} · $${fmt(c.entry)} → $${fmt(c.exit)}</div>
+    </div>
+    <div class="right"><div class="r ${cls(c.ret_pct)}" style="font-size:16px">${sign(c.ret_pct)}</div></div>
+  </div>`;
+}
+
+function render(){
+  const d=DATA, s=d.summary;
+  const banner = d.today_buys.length
+    ? `<div class="banner">🔔 오늘 매수 신호 ${d.today_buys.length}건 — ${d.today_buys.join(", ")}<br>종가 매수 후 토스 자동주문으로 손절가를 걸어두세요.</div>`
+    : `<div class="banner empty">오늘(${d.market_date}) 신규 매수 신호가 없습니다.</div>`;
+  const seg = `<div class="seg">
+      <button class="${tab==='hold'?'on':''}" onclick="tab='hold';render()">보유 ${d.positions.length}</button>
+      <button class="${tab==='closed'?'on':''}" onclick="tab='closed';render()">편출 ${d.closed.length}</button>
+      <button class="${tab==='watch'?'on':''}" onclick="tab='watch';render()">관심권 ${d.watch.length}</button>
+    </div>`;
+  let body="";
+  if(tab==="hold")
+    body = d.positions.length ? `<div class="list">${d.positions.map(rowHold).join("")}</div>`
+                              : `<div class="empty-box">보유 중인 종목이 없습니다</div>`;
+  if(tab==="closed")
+    body = d.closed.length ? `<div class="list">${d.closed.map(rowClosed).join("")}</div>`
+                           : `<div class="empty-box">아직 편출된 종목이 없습니다</div>`;
+  if(tab==="watch")
+    body = d.watch.length ? `<div class="shead">8조건 충족 · 돌파 대기</div><div class="watch">${d.watch.map(w=>`<span class="wtag">${w}</span>`).join("")}</div>`
+                          : `<div class="empty-box">관심권 종목이 없습니다</div>`;
+  document.getElementById("content").innerHTML = `
+    <div class="summary">
+      <div class="label">보유 종목 평균 수익률</div>
+      <div class="big">${sign(s.avg_ret)}</div>
+      <div class="row">
+        <div class="cell"><div class="v">${s.open_count}종목</div><div class="k">보유</div></div>
+        <div class="cell"><div class="v">${s.win_rate}%</div><div class="k">편출 승률</div></div>
+        <div class="cell"><div class="v">${(s.realized>0?"+":"")+s.realized}%p</div><div class="k">실현 합계</div></div>
+      </div>
+    </div>
+    ${banner}${seg}${body}`;
+  document.getElementById("upd").textContent = "업데이트 " + d.updated;
+}
+
+fetch("data.json?t=" + Date.now())
+  .then(r => { if(!r.ok) throw 0; return r.json(); })
+  .then(d => { DATA=d; render(); })
+  .catch(() => {
+    document.getElementById("content").innerHTML =
+      `<div class="empty-box">data.json이 없습니다.<br><br>먼저 <b>python generate_data.py</b> 를 실행한 뒤<br>이 페이지를 새로고침하세요.</div>`;
+  });
+</script>
+</body>
+</html>
