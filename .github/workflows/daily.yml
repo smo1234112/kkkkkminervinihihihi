@@ -25,15 +25,18 @@ jobs:
           python-version: "3.12"
 
       - name: Install deps
-        run: pip install yfinance pandas lxml numpy
+        run: pip install yfinance pandas lxml numpy curl_cffi
 
       - name: Run strategy engine
         run: python generate_data.py
 
       - name: Commit updated data
+        # PAT 시크릿이 있으면 그걸로 push(→ 사람 활동으로 인식돼 60일 자동멈춤 방지),
+        # 없으면 기본 토큰으로 push. 이 커밋이 Vercel 자동 재배포를 트리거한다.
         run: |
           git config user.name "smo1234112"
           git config user.email "5semmm@naver.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT || github.token }}@github.com/${{ github.repository }}
           git add data.json state.json
           if git diff --cached --quiet; then
             echo "변경 없음 (휴장일 등)"

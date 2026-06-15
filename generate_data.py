@@ -12,7 +12,7 @@
 
 사용법:  pip install yfinance pandas lxml   →   python generate_data.py
 """
-import json, os, sys, warnings
+import json, os, sys, time, warnings
 from datetime import datetime
 import numpy as np
 import pandas as pd
@@ -84,6 +84,49 @@ def buy_signal(d, i):
     return (meet8(d, i) and not np.isnan(d["hi50p"][i]) and d["c"][i] > d["hi50p"][i]
             and not np.isnan(d["vol50"][i]) and d["v"][i] > VOL_MULT * d["vol50"][i])
 
+def _flatten(df):
+    """단일종목 다운로드가 MultiIndex 컬럼(('Close','SPY')…)으로 와도 OHLCV 단일 레벨로 정규화."""
+    if isinstance(df.columns, pd.MultiIndex):
+        df = df.copy()
+        df.columns = df.columns.get_level_values(0)
+    return df
+
+def download_prices(tickers, period="2y"):
+    """야후 대량 다운로드 안정화: 80종목씩 배치 + 최대 3회 재시도.
+    한 방에 550종목을 받으면 rate-limit으로 자주 빈 데이터/크래시가 나므로 분할한다.
+    반환: {티커: 일봉DataFrame(OHLCV)} — 받은 것만."""
+    tickers = sorted(set(tickers))
+    frames, CHUNK = {}, 80
+    for attempt in range(3):
+        missing = [t for t in tickers if t not in frames]
+        if not missing:
+            break
+        if attempt:
+            print(f"[재시도 {attempt}] 미수신 {len(missing)}종목"); time.sleep(5)
+        for j in range(0, len(missing), CHUNK):
+            batch = missing[j:j + CHUNK]
+            try:
+                raw = yf.download(batch, period=period, interval="1d", group_by="ticker",
+                                  auto_adjust=True, threads=True, progress=False)
+            except Exception as e:
+                print(f"[경고] 배치 다운로드 실패: {e}"); continue
+            if raw is None or raw.empty:
+                continue
+            if len(batch) == 1:
+                sub = _flatten(raw).dropna(how="all")
+                if not sub.empty:
+                    frames[batch[0]] = sub
+            else:
+                for t in batch:
+                    try:
+                        sub = raw[t].dropna(how="all")
+                        if not sub.empty:
+                            frames[t] = sub
+                    except Exception:
+                        pass
+    print(f"다운로드 완료: {len(frames)}/{len(tickers)}종목 수신")
+    return frames
+
 def main():
     state = {"positions": {}, "closed": [], "processed_dates": []}
     if os.path.exists(STATE_FILE):
@@ -91,21 +134,43 @@ def main():
 
     uni = get_universe()
     print(f"유니버스 {len(uni)}종목 | 데이터 다운로드 중...")
-    raw = yf.download(sorted(set(uni)|set(state["positions"])|{"SPY"}), period="2y", interval="1d",
-                      group_by="ticker", auto_adjust=True, threads=True, progress=False)
-    spx = raw["SPY"]["Close"].dropna()
+    frames = download_prices(set(uni) | set(state["positions"]) | {"SPY"})
+
+    # SPY는 상대강도(RS) 계산의 기준이라 필수. 누락 시 단독 재시도.
+    if "SPY" not in frames:
+        try:
+            s = yf.download("SPY", period="2y", interval="1d", auto_adjust=True, progress=False)
+            if s is not None and not s.empty:
+                frames["SPY"] = _flatten(s)
+        except Exception as e:
+            print("[경고] SPY 단독 다운로드 실패:", e)
+    if "SPY" not in frames:
+        # 기준지수를 못 받으면 계산 불가 → 크래시 대신 기존 data.json 유지하고 정상 종료
+        # (워크플로를 빨간 실패로 만들지 않아, 다음 거래일에 자동 복구됨)
+        print("[치명] SPY 데이터 수신 실패 → 기존 data.json 유지, 종료")
+        return
+    spx = frames["SPY"]["Close"].dropna()
+
     data = {}
     for t in set(uni) | set(state["positions"]):
         try:
-            d = precompute(raw[t].dropna(), spx)
+            sub = frames.get(t)
+            if sub is None:
+                continue
+            d = precompute(sub.dropna(), spx)
             if d: data[t] = d
         except Exception: pass
 
     all_dates = list(spx.index)
-    todo = all_dates[-BACKFILL_DAYS:] if not state["processed_dates"] else \
-           [dt for dt in all_dates if str(dt.date()) not in state["processed_dates"]][-BACKFILL_DAYS:]
     if not state["processed_dates"]:
+        # 첫 실행: 지난 BACKFILL_DAYS 거래일을 시간순(과거→현재)으로 소급
+        todo = all_dates[-BACKFILL_DAYS:]
         print(f"첫 실행 → 지난 {len(todo)}거래일 소급 처리")
+    else:
+        # 이후 실행: '마지막으로 처리한 날짜' 이후의 날짜만, 항상 시간순으로 전진.
+        # (과거 미처리 날짜로 거꾸로 돌아가지 않음 → 매도일<매수일 오류 방지)
+        last_done = max(state["processed_dates"])   # ISO 날짜라 문자열 비교 = 시간순 비교
+        todo = [dt for dt in all_dates if str(dt.date()) > last_done]
 
     for dt in todo:
         ds = str(dt.date())
