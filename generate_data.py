@@ -195,7 +195,7 @@ def main():
         cands.sort(reverse=True)
         for _, t, px in cands:
             if len(state["positions"]) >= MAX_POS: break
-            state["positions"][t] = dict(entry=round(px,2), date=ds, time="16:00 ET(종가)",
+            state["positions"][t] = dict(entry=round(px,2), date=ds,
                                          stop=round(px*(1-STOP_PCT/100), 2))
         state["processed_dates"].append(ds)
 
@@ -205,14 +205,21 @@ def main():
     for t, p in sorted(state["positions"].items(), key=lambda x: x[1]["date"], reverse=True):
         d = data.get(t); i = d["pos_map"].get(last_dt) if d else None
         last = float(d["c"][i]) if i is not None else p["entry"]
-        positions_out.append(dict(ticker=t, entry_date=p["date"], entry_time=p["time"], entry=p["entry"],
+        positions_out.append(dict(ticker=t, entry_date=p["date"], entry=p["entry"],
             stop=p["stop"], last=round(last,2), ret_pct=round((last/p["entry"]-1)*100,2),
             days=int(np.busday_count(p["date"], str(last_dt.date())))))
+    # 관심권: 8조건은 충족했고 '50일 신고가 돌파'만 기다리는 종목.
+    # 화면에 현재가/돌파목표가/돌파까지 남은 %/거래량배수까지 담아 보낸다.
     watch = []
     for t, d in data.items():
         i = d["pos_map"].get(last_dt)
         if i and i >= 261 and t not in state["positions"] and meet8(d, i) and not buy_signal(d, i):
-            watch.append(t)
+            last_px = float(d["c"][i])
+            pivot = float(d["hi50p"][i]) if not np.isnan(d["hi50p"][i]) else last_px
+            volr = float(d["v"][i] / d["vol50"][i]) if not np.isnan(d["vol50"][i]) and d["vol50"][i] > 0 else 0.0
+            watch.append(dict(ticker=t, last=round(last_px, 2), pivot=round(pivot, 2),
+                              gap_pct=round((pivot/last_px - 1)*100, 2), vol_ratio=round(volr, 1)))
+    watch.sort(key=lambda w: abs(w["gap_pct"]))   # 돌파에 가까운 순으로
     today_buys = [p for p in positions_out if p["entry_date"] == str(last_dt.date())]
     rets = [p["ret_pct"] for p in positions_out]
     closed_rets = [c["ret_pct"] for c in state["closed"]]
@@ -225,7 +232,7 @@ def main():
                      win_rate=round(100*sum(1 for r in closed_rets if r > 0)/len(closed_rets), 1) if closed_rets else 0,
                      realized=round(float(np.sum(closed_rets)), 1) if closed_rets else 0),
         positions=positions_out, closed=state["closed"][:100],
-        today_buys=[p["ticker"] for p in today_buys], watch=sorted(watch)[:40])
+        today_buys=[p["ticker"] for p in today_buys], watch=watch[:40])
     json.dump(out, open(DATA_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(state, open(STATE_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"\n기준일 {out['market_date']} | 보유 {len(positions_out)} (평균 {out['summary']['avg_ret']:+.1f}%) | "
