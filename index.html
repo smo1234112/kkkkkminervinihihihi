@@ -77,6 +77,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .avatar.down{background:var(--blue50);color:var(--blue600)}
 .mid{flex:1;min-width:0}
 .mid .t{font-size:16px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:6px}
+.mid .ko{font-size:11.5px;color:var(--grey600);font-weight:600;margin-top:3px;letter-spacing:-.2px}
 .mid .s{font-size:12.5px;color:var(--grey500);margin-top:4px;font-weight:500;line-height:1.4}
 .mid .s b{color:var(--red500);font-weight:700}
 .mid .s .dot{color:var(--grey300);margin:0 5px}
@@ -94,6 +95,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .wcard{background:var(--bg);border-radius:var(--r-m);box-shadow:var(--shadow-card);margin:0 16px 10px;padding:15px 16px}
 .wtop{display:flex;align-items:center;justify-content:space-between}
 .wtop .tk{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.wko{font-size:11.5px;color:var(--grey500);font-weight:600;margin-top:3px;letter-spacing:-.2px}
 .wtop .gap{font-size:12px;font-weight:800;color:var(--blue600);background:var(--blue50);border-radius:8px;padding:4px 9px}
 .wtop .gap.broke{color:var(--red500);background:var(--red50)}
 .wprices{display:flex;gap:18px;margin-top:11px}
@@ -150,6 +152,77 @@ const sign = n => (n>0?"+":"") + Number(n).toFixed(2) + "%";
 const cls  = n => n>0 ? "pos" : (n<0 ? "neg" : "flat");
 let DATA=null, tab="hold";
 
+/* 티커 → "한글기업명 / 산업" (S&P500·나스닥100 주요 종목) */
+const NAMES = {
+AAPL:"애플 / IT기기", MSFT:"마이크로소프트 / 소프트웨어", NVDA:"엔비디아 / 반도체",
+GOOGL:"알파벳(구글) / 인터넷", GOOG:"알파벳(구글) / 인터넷", AMZN:"아마존 / 이커머스",
+META:"메타(페이스북) / 소셜미디어", TSLA:"테슬라 / 전기차", AVGO:"브로드컴 / 반도체",
+AMD:"AMD / 반도체", INTC:"인텔 / 반도체", QCOM:"퀄컴 / 반도체", TXN:"텍사스인스트루먼트 / 반도체",
+MU:"마이크론 / 반도체", AMAT:"어플라이드머트리얼즈 / 반도체장비", LRCX:"램리서치 / 반도체장비",
+KLAC:"KLA / 반도체장비", ASML:"ASML / 반도체장비", ADI:"아나로그디바이스 / 반도체",
+MRVL:"마벨 / 반도체", NXPI:"NXP / 반도체", MCHP:"마이크로칩 / 반도체", ON:"온세미 / 반도체",
+MPWR:"모놀리식파워 / 반도체", SMCI:"슈퍼마이크로 / 서버", ARM:"ARM / 반도체설계",
+TSM:"TSMC / 파운드리", STX:"시게이트 / 스토리지", WDC:"웨스턴디지털 / 스토리지",
+ANET:"아리스타네트웍스 / 네트워크장비", CSCO:"시스코 / 네트워크장비", DELL:"델 / IT기기",
+HPQ:"HP / IT기기", HPE:"HPE / IT인프라", IBM:"IBM / IT서비스", ORCL:"오라클 / 소프트웨어",
+CRM:"세일즈포스 / 소프트웨어", ADBE:"어도비 / 소프트웨어", NOW:"서비스나우 / 소프트웨어",
+INTU:"인튜이트 / 소프트웨어", PANW:"팔로알토네트웍스 / 보안SW", CRWD:"크라우드스트라이크 / 보안SW",
+FTNT:"포티넷 / 보안SW", NET:"클라우드플레어 / 클라우드", SNOW:"스노우플레이크 / 클라우드",
+DDOG:"데이터독 / 소프트웨어", PLTR:"팔란티어 / 소프트웨어", SNPS:"시놉시스 / 반도체설계SW",
+CDNS:"케이던스 / 반도체설계SW", ACN:"액센츄어 / IT서비스", UBER:"우버 / 모빌리티",
+ABNB:"에어비앤비 / 여행플랫폼", NFLX:"넷플릭스 / 스트리밍", DIS:"디즈니 / 미디어",
+CMCSA:"컴캐스트 / 미디어·통신", T:"AT&T / 통신", VZ:"버라이즌 / 통신", TMUS:"T모바일 / 통신",
+JPM:"JP모건 / 은행", BAC:"뱅크오브아메리카 / 은행", WFC:"웰스파고 / 은행", C:"씨티그룹 / 은행",
+GS:"골드만삭스 / 투자은행", MS:"모건스탠리 / 투자은행", PNC:"PNC파이낸셜 / 은행",
+USB:"US뱅코프 / 은행", TFC:"트루이스트파이낸셜 / 은행", MTB:"M&T뱅크 / 은행",
+FITB:"피프스서드뱅코프 / 은행", KEY:"키코프 / 은행", RF:"리전스파이낸셜 / 은행",
+CFG:"시티즌스파이낸셜 / 은행", HBAN:"헌팅턴뱅크셰어스 / 은행", STT:"스테이트스트리트 / 수탁은행",
+BK:"뱅크오브뉴욕멜론 / 수탁은행", BNY:"뱅크오브뉴욕멜론 / 수탁은행", NTRS:"노던트러스트 / 수탁은행",
+SCHW:"찰스슈왑 / 증권", IBKR:"인터랙티브브로커스 / 증권", BLK:"블랙록 / 자산운용",
+BX:"블랙스톤 / 사모펀드", KKR:"KKR / 사모펀드", APO:"아폴로 / 사모펀드",
+BEN:"프랭클린리소시스 / 자산운용", IVZ:"인베스코 / 자산운용", TROW:"T로우프라이스 / 자산운용",
+V:"비자 / 결제", MA:"마스터카드 / 결제", AXP:"아메리칸익스프레스 / 카드", PYPL:"페이팔 / 결제",
+COIN:"코인베이스 / 가상자산거래소", SPGI:"S&P글로벌 / 금융정보", ICE:"인터컨티넨탈익스체인지 / 거래소",
+CME:"CME그룹 / 거래소", PFG:"프린시펄파이낸셜 / 보험·자산운용", AIZ:"어슈어런트 / 보험",
+GL:"글로브라이프 / 보험", MET:"메트라이프 / 보험", PRU:"푸르덴셜파이낸셜 / 보험", AIG:"AIG / 보험",
+ALL:"올스테이트 / 보험", TRV:"트래블러스 / 보험", CB:"처브 / 보험", PGR:"프로그레시브 / 보험",
+MMC:"마쉬앤맥레넌 / 보험중개", LLY:"일라이릴리 / 제약", UNH:"유나이티드헬스 / 헬스케어보험",
+JNJ:"존슨앤존슨 / 제약·헬스케어", ABBV:"애브비 / 제약", MRK:"머크 / 제약", PFE:"화이자 / 제약",
+TMO:"써모피셔 / 생명과학장비", ABT:"애보트 / 의료기기", DHR:"다나허 / 생명과학장비",
+AMGN:"암젠 / 바이오", GILD:"길리어드 / 바이오", VRTX:"버텍스 / 바이오", REGN:"리제네론 / 바이오",
+BIIB:"바이오젠 / 바이오", ISRG:"인튜이티브서지컬 / 의료기기", SYK:"스트라이커 / 의료기기",
+MDT:"메드트로닉 / 의료기기", BSX:"보스턴사이언티픽 / 의료기기", CI:"시그나 / 헬스케어보험",
+ELV:"엘레반스헬스 / 헬스케어보험", CVS:"CVS헬스 / 약국·헬스케어", MCK:"맥케슨 / 의약품유통",
+HCA:"HCA헬스케어 / 병원", DVA:"다비타 / 투석·헬스케어", CNC:"센틴 / 헬스케어보험",
+WMT:"월마트 / 대형마트", COST:"코스트코 / 창고형마트", TGT:"타깃 / 대형마트",
+HD:"홈디포 / 주택개량소매", LOW:"로우스 / 주택개량소매", TJX:"TJX(티제이맥스) / 의류할인소매",
+ROST:"로스스토어 / 의류할인소매", CASY:"케이시스 / 편의점·소매", MCD:"맥도날드 / 외식",
+SBUX:"스타벅스 / 외식", CMG:"치폴레 / 외식", NKE:"나이키 / 의류·신발", LULU:"룰루레몬 / 의류",
+KO:"코카콜라 / 음료", PEP:"펩시코 / 음료·식품", MNST:"몬스터음료 / 음료", PG:"P&G / 생활용품",
+CL:"콜게이트 / 생활용품", PM:"필립모리스 / 담배", MO:"알트리아 / 담배", MDLZ:"몬델리즈 / 식품",
+KHC:"크래프트하인즈 / 식품", GIS:"제너럴밀스 / 식품", ADM:"아처대니얼스미들랜드 / 곡물·식품",
+TSN:"타이슨푸드 / 식품(육류)", KMB:"킴벌리클라크 / 생활용품", EL:"에스티로더 / 화장품",
+GE:"GE에어로스페이스 / 항공엔진", BA:"보잉 / 항공기", CAT:"캐터필러 / 건설기계", DE:"디어 / 농기계",
+HON:"하니웰 / 산업재", RTX:"RTX(레이시온) / 방산", LMT:"록히드마틴 / 방산", GD:"제너럴다이내믹스 / 방산",
+NOC:"노스럽그러먼 / 방산", TDG:"트랜스다임 / 항공부품", ETN:"이튼 / 전기장비", EMR:"에머슨 / 산업자동화",
+ITW:"일리노이툴웍스 / 산업재", MMM:"3M / 산업재", SWK:"스탠리블랙앤데커 / 공구", UPS:"UPS / 물류",
+FDX:"페덱스 / 물류", EXPD:"익스페디터스 / 물류", CHRW:"CH로빈슨 / 물류", JBHT:"JB헌트 / 운송·물류",
+UNP:"유니온퍼시픽 / 철도", CSX:"CSX / 철도", NSC:"노퍽서던 / 철도", DAL:"델타항공 / 항공",
+UAL:"유나이티드항공 / 항공", AAL:"아메리칸항공 / 항공", LUV:"사우스웨스트항공 / 항공",
+XOM:"엑슨모빌 / 석유", CVX:"셰브론 / 석유", COP:"코노코필립스 / 석유", EOG:"EOG리소시스 / 석유·가스",
+SLB:"슐럼버거 / 유전서비스", LIN:"린데 / 산업가스", SHW:"셔윈윌리엄스 / 페인트", FCX:"프리포트맥모란 / 구리광산",
+NUE:"뉴코 / 철강", STLD:"스틸다이내믹스 / 철강", NEE:"넥스트에라에너지 / 전력(신재생)",
+DUK:"듀크에너지 / 전력", SO:"서던컴퍼니 / 전력", D:"도미니언에너지 / 전력", AEP:"아메리칸일렉트릭파워 / 전력",
+EXC:"엑셀론 / 전력", CEG:"컨스텔레이션에너지 / 전력", LNT:"얼라이언트에너지 / 전력", EIX:"에디슨인터내셔널 / 전력",
+PLD:"프로로지스 / 물류리츠", AMT:"아메리칸타워 / 통신타워리츠", EQIX:"에퀴닉스 / 데이터센터리츠",
+SPG:"사이먼프로퍼티 / 쇼핑몰리츠", O:"리얼티인컴 / 리츠", KIM:"킴코리얼티 / 상업용리츠",
+FRT:"페더럴리얼티 / 상업용리츠", HST:"호스트호텔 / 호텔리츠", WELL:"웰타워 / 헬스케어리츠",
+DLR:"디지털리얼티 / 데이터센터리츠", MAR:"메리어트 / 호텔", HLT:"힐튼 / 호텔",
+MGM:"MGM리조트 / 카지노·호텔", LVS:"라스베이거스샌즈 / 카지노", BKNG:"부킹홀딩스 / 여행플랫폼",
+JBL:"자빌 / 전자제조(EMS)", FLEX:"플렉스 / 전자제조(EMS)", GM:"제너럴모터스 / 자동차", F:"포드 / 자동차"
+};
+function koLine(t, cl){ const n = NAMES[t]; return n ? `<div class="${cl||'ko'}">${n}</div>` : ""; }
+
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2000);}
 
@@ -160,6 +233,7 @@ function rowHold(p){
     <div class="avatar ${p.ret_pct<0?'down':'up'}">${p.ticker.slice(0,4)}</div>
     <div class="mid">
       <div class="t">${p.ticker}${todayBuy?'<span class="chip buy">오늘 매수</span>':''}</div>
+      ${koLine(p.ticker)}
       <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>손절 $${fmt(p.stop)}</b></div>
     </div>
     <div class="right">
@@ -175,6 +249,7 @@ function rowClosed(c){
     <div class="avatar ${c.ret_pct<0?'down':'up'}">${c.ticker.slice(0,4)}</div>
     <div class="mid">
       <div class="t">${c.ticker}<span class="chip sell">${c.reason}</span></div>
+      ${koLine(c.ticker)}
       <div class="s">${c.entry_date}<span class="dot">→</span>${c.exit_date}</div>
     </div>
     <div class="right"><div class="r ${cls(c.ret_pct)}" style="font-size:17px">${sign(c.ret_pct)}</div></div>
@@ -195,6 +270,7 @@ function cardWatch(w){
       <span class="tk">${w.ticker}</span>
       <span class="gap ${broke?'broke':''}">${gapTxt}</span>
     </div>
+    ${koLine(w.ticker, 'wko')}
     <div class="wprices">
       <div class="item"><div class="k">현재가</div><div class="v">$${fmt(w.last)}</div></div>
       <div class="item"><div class="k">돌파 목표가</div><div class="v tgt">$${fmt(w.pivot)}</div></div>
