@@ -168,12 +168,14 @@ def st_exit(d, i, p):
     return None
 
 def umd_ranked(data, last_dt):
+    # 비현실적 모멘텀(>400%)은 분할/스핀오프/신규상장 가격 아티팩트 → 제외
     ranked = []
     for t, d in data.items():
         i = d["pos_map"].get(last_dt)
         if i is None or i < 261: continue
         mv = d["mom121"][i]
-        if not np.isnan(mv): ranked.append((mv, t, float(d["c"][i])))
+        if not np.isnan(mv) and -0.95 < mv <= 4.0:
+            ranked.append((mv, t, float(d["c"][i])))
     ranked.sort(reverse=True)
     return ranked
 
