@@ -179,9 +179,20 @@ def umd_ranked(data, last_dt):
     ranked.sort(reverse=True)
     return ranked
 
-def process_umd(st, data, last_dt, ds):
+def process_umd(st, data, last_dt, ds, risk_on=True):
     cur_month = ds[:7]
     if st["positions"] and st.get("last_rebalance") == cur_month:
+        return
+    if not risk_on:
+        # 절대모멘텀 OFF(시장 약세) → 전량 현금 회피 (듀얼모멘텀의 핵심)
+        for t in list(st["positions"]):
+            d = data.get(t); i = d["pos_map"].get(last_dt) if d else None
+            px = float(d["c"][i]) if i is not None else st["positions"][t]["entry"]
+            p = st["positions"][t]
+            st["closed"].insert(0, dict(ticker=t, entry_date=p["date"], exit_date=ds,
+                ret_pct=round((px/p["entry"]-1)*100, 2), reason="절대모멘텀 현금회피"))
+            del st["positions"][t]
+        st["last_rebalance"] = cur_month
         return
     ranked = umd_ranked(data, last_dt)
     target = ranked[:UMD_TOP]; target_set = {t for _, t, _ in target}
@@ -229,7 +240,7 @@ def out_breakout(label, desc, st, data, last_dt, market_date, sub_fn, watch_fn):
         positions=positions_out, closed=st["closed"][:100],
         today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:40])
 
-def out_umd(label, desc, st, data, last_dt, market_date):
+def out_umd(label, desc, st, data, last_dt, market_date, risk_on=True):
     ranked = umd_ranked(data, last_dt)
     rankpos = {t: r+1 for r, (mv, t, px) in enumerate(ranked)}
     momof = {t: mv for mv, t, px in ranked}
@@ -247,7 +258,10 @@ def out_umd(label, desc, st, data, last_dt, market_date):
         watch.append(dict(ticker=t, last=round(px, 2), rank=rankpos[t], mom_pct=round(mv*100, 1)))
     return dict(label=label, desc=desc, mode="rank", summary=summary_of(positions_out, st["closed"]),
         positions=positions_out, closed=st["closed"][:100],
-        today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:20])
+        today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:20],
+        cash=(not risk_on),
+        note=("📈 절대모멘텀 ON — 시장 상승추세라 상위 15종목 정상 보유" if risk_on
+              else "📉 절대모멘텀 OFF — 시장 약세(SPY 12개월 −)라 현금 100% 회피 중"))
 
 def load_state():
     raw = {}
@@ -290,9 +304,14 @@ def main():
 
     all_dates = list(spx.index); last_dt = all_dates[-1]; market_date = str(last_dt.date())
 
+    # 절대모멘텀(듀얼모멘텀): SPY 12개월 수익이 +면 위험-ON, -면 위험-OFF(현금)
+    spx_arr = spx.values
+    risk_on = len(spx_arr) >= 253 and spx_arr[-1] > spx_arr[-253]
+    print(f"절대모멘텀: {'ON(상승)' if risk_on else 'OFF(약세→현금)'}")
+
     process_breakout(state["minervini"], data, all_dates, buy_signal, mn_exit, use_stop=True)
     process_breakout(state["stage"], data, all_dates, stage_entry, st_exit, use_stop=False)
-    process_umd(state["umd"], data, last_dt, market_date)
+    process_umd(state["umd"], data, last_dt, market_date, risk_on)
 
     mn_sub = lambda p, d, i: f"손절 ${p.get('stop', round(p['entry']*(1-STOP_PCT/100),2)):.2f}"
     st_sub = lambda p, d, i: (f"150일선 ${d['sma150'][i]:.2f}" if (d is not None and i is not None and not np.isnan(d['sma150'][i])) else "150일선 이탈 시 청산")
@@ -303,8 +322,8 @@ def main():
         "stage": out_breakout("Stage", "150일선 위·상승(Stage 2) + 50일 신고가 돌파 / 150일선 이탈 청산",
                               state["stage"], data, last_dt, market_date, st_sub,
                               lambda d, i: stage_up(d, i) and not stage_entry(d, i)),
-        "umd": out_umd("UMD 모멘텀", "매월 12-1개월 모멘텀 상위 15종목 보유 · 월말 리밸런스",
-                       state["umd"], data, last_dt, market_date),
+        "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 15종목 + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
+                       state["umd"], data, last_dt, market_date, risk_on),
     }
     out = dict(updated=datetime.now().strftime("%Y-%m-%d %H:%M"), market_date=market_date,
                start_date="6월 11일", order=["minervini", "stage", "umd"], strategies=blocks)

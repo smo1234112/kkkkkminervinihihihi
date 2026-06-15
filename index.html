@@ -71,6 +71,11 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .cmut{color:var(--grey400);font-weight:600}
 .ctot{margin:18px 4px 0;padding:15px 0;border-top:2px solid var(--grey200);font-size:16px;font-weight:800;text-align:center;letter-spacing:-.3px}
 .cfoot{margin:12px 6px 0;font-size:11.5px;color:var(--grey500);font-weight:500;line-height:1.6}
+.cfoot b{color:var(--grey700);font-weight:800}
+.cdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.ctags{display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:5px;font-size:10.5px;color:var(--grey600);font-weight:700}
+.ctags .cdot{width:7px;height:7px;margin-right:3px}
+.snote{margin:6px 16px 0;background:var(--grey100);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--grey700)}
 
 /* ───── 요약 히어로 카드 ───── */
 .hero{margin:6px 16px 4px;border-radius:var(--r-l);padding:24px 22px 20px;color:#fff;position:relative;overflow:hidden;
@@ -806,7 +811,7 @@ function render(){
     body = S.watch.length ? `${whead}${S.watch.map(cardWatch).join("")}`
                           : `<div class="empty"><span class="em">🔍</span>관심권 종목이 없습니다</div>`;
   document.getElementById("content").innerHTML = `
-    ${strat}${desc}
+    ${strat}${desc}${S.note?`<div class="snote">${S.note}</div>`:""}
     <div class="hero">
       <div class="lbl">${S.label} · 보유 평균 수익률</div>
       <div class="big">${sign(s.avg_ret)}</div>
@@ -830,52 +835,66 @@ try{ const a=localStorage.getItem("calcAmt"); if(a) calcAmt=parseFloat(a)||10000
      const f=localStorage.getItem("calcFx"); if(f) calcFx=parseFloat(f)||1350; }catch(e){}
 const won = n => Math.round(Number(n)).toLocaleString("en-US");
 
+const SCOLOR = {minervini:"var(--blue500)", stage:"#15B886", umd:"#7048E8"};
 function buyPlan(){
   const order=DATA.order||Object.keys(DATA.strategies);
   const budgetUSD = calcCur==="$" ? calcAmt : (calcAmt/(calcFx||1));
-  const groups=[];
+  const sleeves={}, byTicker={};
   for(const k of order){
     const S=DATA.strategies[k]; if(!S) continue;
-    const w=WEIGHTS[k]||0, ps=S.positions||[], sleeve=budgetUSD*w;
+    const ps=S.positions||[], sleeve=budgetUSD*(WEIGHTS[k]||0);
+    sleeves[k]={label:S.label, w:WEIGHTS[k]||0, sleeve, color:SCOLOR[k]||"var(--grey700)"};
     const per = ps.length ? sleeve/ps.length : 0;
-    groups.push({label:S.label, w, sleeve, rows: ps.map(p=>({ticker:p.ticker, last:p.last, usd:per, shares:p.last>0?per/p.last:0}))});
+    for(const p of ps){
+      const o = byTicker[p.ticker] || (byTicker[p.ticker]={ticker:p.ticker, last:p.last, usd:0, keys:[]});
+      o.usd += per; o.keys.push(k);
+    }
   }
-  return {budgetUSD, groups};
+  const common=[], single={};
+  for(const t in byTicker){ const o=byTicker[t]; o.keys.length>=2 ? common.push(o) : (single[o.keys[0]]=single[o.keys[0]]||[]).push(o); }
+  common.sort((a,b)=>b.usd-a.usd);
+  for(const k in single) single[k].sort((a,b)=>b.usd-a.usd);
+  return {budgetUSD, sleeves, common, single, order};
 }
 function recalcBuy(){
   const el=document.getElementById("calcResult"); if(!el) return;
-  const {budgetUSD, groups}=buyPlan();
+  const {budgetUSD, sleeves, common, single, order}=buyPlan();
   if(!budgetUSD || budgetUSD<=0){ el.innerHTML=`<div class="empty" style="padding:34px">금액을 입력하면 종목별 매수금액이 나와요</div>`; return; }
+  const fx=calcFx||1350, krw=u=>Math.round(u*fx/1000)*1000;
+  const row=(o,withTags)=>{
+    const shn=o.last>0?o.usd/o.last:0, sh = shn>=1?shn.toFixed(2):shn.toFixed(3);
+    const ko=(NAMES[o.ticker]||"").split(" / ")[0];
+    const tags = withTags ? `<span class="ctags">${o.keys.map(k=>`<i class="cdot" style="background:${sleeves[k].color}"></i>${sleeves[k].label}`).join("")}</span>` : "";
+    return `<div class="crow"><div class="cl"><b>${o.ticker}</b>${ko?`<span class="cko">${ko}</span>`:""}${tags}</div>
+      <div class="cr"><div class="camt">₩${won(krw(o.usd))}</div><div class="csh">$${won(o.usd)} · ≈${sh}주 · $${fmt(o.last)}</div></div></div>`;
+  };
   let html="", total=0;
-  for(const g of groups){
-    html+=`<div class="cgrp"><div class="chead">${g.label} <span class="cmut">· ${Math.round(g.w*100)}% · $${won(g.sleeve)}</span></div>`;
-    if(!g.rows.length) html+=`<div class="crow"><span class="cmut">보유 종목 없음</span></div>`;
-    for(const r of g.rows){
-      total+=r.usd;
-      const sh = r.shares>=1 ? r.shares.toFixed(2) : r.shares.toFixed(3);
-      const ko = (NAMES[r.ticker]||"").split(" / ")[0];
-      html+=`<div class="crow">
-        <div class="cl"><b>${r.ticker}</b>${ko?`<span class="cko">${ko}</span>`:""}</div>
-        <div class="cr"><div class="camt">$${won(r.usd)}</div><div class="csh">≈ ${sh}주 · 현재 $${fmt(r.last)}</div></div>
-      </div>`;
-    }
+  if(common.length){
+    html+=`<div class="cgrp"><div class="chead" style="border-color:var(--grey400)"><i class="cdot" style="background:var(--grey700)"></i><span style="color:var(--grey800)">공통 보유</span> <span class="cmut">· 여러 전략 중복(합산)</span></div>`;
+    for(const o of common){ total+=o.usd; html+=row(o,true); }
     html+=`</div>`;
   }
-  html+=`<div class="ctot">총 배분 $${won(total)} <span class="cmut">≈ ₩${won(budgetUSD*calcFx)} (환율 ${calcFx})</span></div>
-    <div class="cfoot">· 토스 해외주식 소수점(분할) 매수 기준이에요. 정수로만 사려면 주식수를 내림하세요.<br>· 비중은 UMD 40 / 미너비니 35 / Stage 25, 각 전략 안에서는 종목별 균등 배분입니다.</div>`;
+  for(const k of order){
+    const sl=sleeves[k]; if(!sl) continue; const list=single[k]||[];
+    html+=`<div class="cgrp"><div class="chead" style="border-color:${sl.color}"><i class="cdot" style="background:${sl.color}"></i><span style="color:${sl.color}">${sl.label}</span> <span class="cmut">· ${Math.round(sl.w*100)}% · $${won(sl.sleeve)}</span></div>`;
+    if(!list.length) html+=`<div class="crow"><span class="cmut">단독 보유 없음(공통에 포함)</span></div>`;
+    for(const o of list){ total+=o.usd; html+=row(o,false); }
+    html+=`</div>`;
+  }
+  html+=`<div class="ctot">총 ₩${won(krw(total))} <span class="cmut">($${won(total)} · 환율 ${fx})</span></div>
+    <div class="cfoot">· 금액(₩ 또는 $)을 토스 해외주식 "금액으로 매수"에 그대로 넣으면 돼요(소수점 매수). 정수만 사려면 주식수 내림.<br>· <b>공통 보유</b> = 여러 전략이 동시에 가진 종목(배분액 합산). 색상 = 전략 구분.<br>· 비중 UMD 40 / 미너비니 35 / Stage 25, 전략 안에서는 종목 균등.</div>`;
   el.innerHTML=html;
 }
 function renderCalc(strat, root){
   const curBtns=["$","₩"].map(c=>`<button class="${calcCur===c?'on':''}" onclick="setCalcCur('${c}')">${c}</button>`).join("");
-  const fxRow = calcCur==="₩" ? `<div class="cfx">환율 <input type="number" value="${calcFx}" oninput="onCalcFx(this.value)"> 원/$ <span class="cmut">(미국주식은 달러로 매수돼요)</span></div>` : "";
   document.getElementById("content").innerHTML = `${strat}
     <div class="calc">
-      <div class="clabel">💰 가진 금액을 넣으면 <b>40/35/25 비중</b>으로 종목마다 얼마씩(몇 주) 살지 계산해줘요</div>
+      <div class="clabel">💰 가진 금액을 넣으면 <b>40/35/25 비중</b>으로 종목마다 얼마씩 살지 계산해줘요</div>
       <div class="cinput">
         <div class="ccur">${curBtns}</div>
         <input id="calcAmt" type="number" inputmode="decimal" value="${calcAmt}" oninput="onCalcInput(this.value)" placeholder="투자금액">
       </div>
-      ${fxRow}
+      <div class="cfx">환율 <input type="number" value="${calcFx}" oninput="onCalcFx(this.value)"> 원/$ <span class="cmut">· 미국주식은 달러로 매수돼요</span></div>
       <div id="calcResult"></div>
     </div>`;
   recalcBuy();
