@@ -89,7 +89,10 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .cdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
 .ctags{display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:5px;font-size:10.5px;color:var(--grey600);font-weight:700}
 .ctags .cdot{width:7px;height:7px;margin-right:3px}
-.snote{margin:6px 16px 0;background:var(--grey100);border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--grey700)}
+.snote{margin:8px 16px 2px;border-radius:14px;padding:13px 16px;font-size:14px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.snote.on{background:linear-gradient(135deg,#2D3D5C 0%,#161E30 100%);box-shadow:0 8px 20px rgba(22,30,48,.28)}
+.snote.off{background:linear-gradient(135deg,#F0584F 0%,#C0392B 100%);box-shadow:0 8px 20px rgba(192,57,43,.28)}
+.snsub{display:block;font-size:11.5px;font-weight:600;opacity:.78;margin-top:4px;letter-spacing:0}
 
 /* ───── 요약 히어로 카드 ───── */
 .hero{margin:6px 16px 4px;border-radius:var(--r-l);padding:24px 22px 20px;color:#fff;position:relative;overflow:hidden;
@@ -825,7 +828,7 @@ function render(){
     body = S.watch.length ? `${whead}${S.watch.map(cardWatch).join("")}`
                           : `<div class="empty"><span class="em">🔍</span>관심권 종목이 없습니다</div>`;
   document.getElementById("content").innerHTML = `
-    ${strat}${desc}${S.note?`<div class="snote">${S.note}</div>`:""}
+    ${strat}${desc}${snoteHtml(S)}
     <div class="hero">
       <div class="lbl">${S.label} · 보유 평균 수익률</div>
       <div class="big">${sign(s.avg_ret)}</div>
@@ -840,6 +843,12 @@ function render(){
 }
 function setTab(t){tab=t;render();}
 function setStrat(k){curStrat=k;tab='hold';render();}
+function snoteHtml(S){
+  if(!S || !S.note) return "";
+  const t = S.note.replace(/^[^\s]+\s/, "");          // 앞 이모지 제거
+  const parts = t.split(" — ");
+  return `<div class="snote ${S.cash?'off':'on'}">${S.cash?'⚠️':'⭐'} <b>${parts[0]}</b>${parts[1]?`<span class="snsub">${parts[1]}</span>`:""}</div>`;
+}
 
 /* ───── 비중 계산기 (UMD 40 / 미너비니 35 / Stage 25) ───── */
 const WEIGHTS = {umd:0.40, minervini:0.35, stage:0.25};
