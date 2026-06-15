@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>미너비니 전략실</title>
+<title>Gabriel Oh 전략실</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -32,8 +32,10 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 /* ───── 헤더 ───── */
 .nav{position:sticky;top:0;z-index:10;background:rgba(242,244,246,.86);backdrop-filter:blur(14px);
      padding:6px 20px 12px;display:flex;align-items:flex-end;justify-content:space-between}
-.nav h1{font-size:22px;font-weight:800;letter-spacing:-.6px}
-.nav .upd{font-size:11px;color:var(--grey500);font-weight:600;padding-bottom:3px}
+.nav h1{font-size:21px;font-weight:800;letter-spacing:-.6px}
+.nav .meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-bottom:3px}
+.nav .upd{font-size:11px;color:var(--grey500);font-weight:600}
+.nav .start{font-size:10.5px;color:var(--blue600);background:var(--blue50);border-radius:7px;padding:2px 7px;font-weight:800;letter-spacing:-.2px}
 
 /* ───── 요약 히어로 카드 ───── */
 .hero{margin:6px 16px 4px;border-radius:var(--r-l);padding:24px 22px 20px;color:#fff;position:relative;overflow:hidden;
@@ -128,8 +130,11 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 <div class="app">
   <div class="dollung"><span class="hb">♥</span>돌룽이<span class="hb">♥</span></div>
   <div class="nav">
-    <h1>미너비니 전략실</h1>
-    <span class="upd" id="upd"></span>
+    <h1>Gabriel Oh 전략실</h1>
+    <div class="meta">
+      <span class="upd" id="upd"></span>
+      <span class="start">매매 시작일 : 6월 11일</span>
+    </div>
   </div>
   <div id="content">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
