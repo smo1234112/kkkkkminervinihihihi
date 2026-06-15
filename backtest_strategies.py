@@ -271,25 +271,37 @@ def main():
     test_dates=all_dates[-TEST_DAYS:]
     print(f"기간 {test_dates[0].date()}~{test_dates[-1].date()} | 유효 {len(data)}종목\n")
 
-    rows=[]
+    rows=[]; curves={}
     for name,e,x in SIGNAL_STRATS:
         sets=build_sets_signal(e,x,data,test_dates)
         curve,rets,trades=simulate(sets,data,test_dates)
-        m=metrics(curve,rets,trades); m["name"]=name; rows.append(m)
+        m=metrics(curve,rets,trades); m["name"]=name; rows.append(m); curves[name]=curve
         print(f"[{name}] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']} 승률 {m['win']:.0f}%")
     # UMD
     sets=build_sets_umd(data,test_dates); curve,rets,trades=simulate(sets,data,test_dates)
-    m=metrics(curve,rets,trades); m["name"]="UMD(횡단모멘텀)"; rows.append(m)
+    m=metrics(curve,rets,trades); m["name"]="UMD(횡단모멘텀)"; rows.append(m); curves[m["name"]]=curve
     print(f"[UMD] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']} 승률 {m['win']:.0f}%")
     # 벤치마크
     for bn in ["SPY","QQQ"]:
         if bn in frames:
             cur=bh_curve(frames[bn]["Close"].dropna(), test_dates)
             rr=np.diff(cur)/cur[:-1]
-            m=metrics(cur,rr,[]); m["name"]=f"{bn} 보유"; rows.append(m)
+            m=metrics(cur,rr,[]); m["name"]=f"{bn} 보유"; rows.append(m); curves[m["name"]]=cur
             print(f"[{bn}보유] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f}")
 
     rows.sort(key=lambda r:-r["cagr"])
+
+    # ── 연도별(국면별) 수익률 ──
+    years=sorted({dt.year for dt in test_dates})
+    pos_last={}
+    for k,dt in enumerate(test_dates): pos_last[dt.year]=k
+    def yret(curve,idx):
+        base = curve[pos_last[years[idx-1]]] if idx>0 else 1.0
+        return (curve[pos_last[years[idx]]]/base-1)*100
+    ylabels=[]
+    for idx,Y in enumerate(years):
+        suf = "(6월~)" if idx==0 else ("(~6월)" if idx==len(years)-1 else "")
+        ylabels.append(f"{Y}{suf}")
     md=["# 전략 비교 백테스트 결과 (최근 5년, S&P500+나스닥100)","",
         f"- 기간: {test_dates[0].date()} ~ {test_dates[-1].date()} | 유효 {len(data)}종목",
         "- 포지션 cap 없음(신호 전부 동일비중) · 수수료 편도 0.1% · 종가신호→익일반영(룩어헤드 없음)",
@@ -298,6 +310,23 @@ def main():
         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for n,r in enumerate(rows,1):
         md.append(f"| {n} | {r['name']} | {r['cagr']:+.1f}% | {r['tot']:+.0f}% | {r['mdd']:.1f}% | {r['sharpe']:.2f} | {r['vol']:.0f}% | {r['expo']:.0f}% | {r['nt']} | {r['win']:.0f}% | {r['aw']:+.1f}% | {r['al']:+.1f}% |")
+
+    # 연도별(국면별) 표
+    md += ["","## 국면별(연도별) 수익률","",
+           "- 각 연도별 수익률. **2021은 6월부터, 2026은 6월까지** 부분연도.",
+           "- 맨 윗줄 SPY/QQQ로 그 해 장세를 읽으세요(▲상승 / ▼하락).",""]
+    spy_y=[yret(curves.get("SPY 보유",[1,1]),idx) for idx in range(len(years))]
+    regime=[("▲상승" if y>=0 else "▼하락") for y in spy_y]
+    md.append("| 전략 | " + " | ".join(ylabels) + " |")
+    md.append("|---|" + "---|"*len(years))
+    md.append("| **장세(SPY)** | " + " | ".join(f"{regime[i]} {spy_y[i]:+.0f}%" for i in range(len(years))) + " |")
+    order=["QQQ 보유","SPY 보유","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
+    seen=set()
+    for nm in order + [r["name"] for r in rows]:
+        if nm in seen or nm not in curves: continue
+        seen.add(nm)
+        cells=" | ".join(f"{yret(curves[nm],idx):+.0f}%" for idx in range(len(years)))
+        md.append(f"| {nm} | {cells} |")
     open("backtest_results.md","w",encoding="utf-8").write("\n".join(md))
     print("\n".join(md))
     print("\nbacktest_results.md 저장 완료")
