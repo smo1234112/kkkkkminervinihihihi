@@ -37,6 +37,14 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .nav .upd{font-size:11px;color:var(--grey500);font-weight:600}
 .nav .start{font-size:10.5px;color:var(--blue600);background:var(--blue50);border-radius:7px;padding:2px 7px;font-weight:800;letter-spacing:-.2px}
 
+/* ───── 전략 선택기 ───── */
+.strat{display:flex;gap:8px;margin:8px 16px 2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.strat::-webkit-scrollbar{display:none}
+.strat button{flex:none;border:0;background:var(--bg);color:var(--grey600);font-size:14px;font-weight:800;
+  border-radius:12px;padding:9px 16px;cursor:pointer;box-shadow:var(--shadow-card);transition:all .18s;letter-spacing:-.3px}
+.strat button.on{background:var(--grey900);color:#fff;box-shadow:0 4px 12px rgba(2,32,71,.18)}
+.sdesc{margin:8px 20px 2px;font-size:12px;color:var(--grey500);font-weight:600;line-height:1.45}
+
 /* ───── 요약 히어로 카드 ───── */
 .hero{margin:6px 16px 4px;border-radius:var(--r-l);padding:24px 22px 20px;color:#fff;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#3182F6 0%,#2272EB 60%,#1B64DA 100%);box-shadow:0 8px 24px rgba(49,130,246,.28)}
@@ -150,7 +158,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 const fmt = n => n==null ? "-" : Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sign = n => (n>0?"+":"") + Number(n).toFixed(2) + "%";
 const cls  = n => n>0 ? "pos" : (n<0 ? "neg" : "flat");
-let DATA=null, tab="hold";
+let DATA=null, tab="hold", curStrat="minervini";
 
 /* 티커 → "한글기업명 / 산업" (S&P500·나스닥100 주요 종목) */
 const NAMES = {
@@ -234,7 +242,7 @@ function rowHold(p){
     <div class="mid">
       <div class="t">${p.ticker}${todayBuy?'<span class="chip buy">오늘 매수</span>':''}</div>
       ${koLine(p.ticker)}
-      <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>손절 $${fmt(p.stop)}</b></div>
+      <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>${p.sub||''}</b></div>
     </div>
     <div class="right">
       <div class="p">$${fmt(p.last)}</div>
@@ -259,6 +267,17 @@ function rowClosed(c){
 /* 관심권: 8조건 충족 + 돌파 대기. 현재가/돌파목표가/남은%/거래량 표시 */
 function cardWatch(w){
   if(typeof w === "string") return `<div class="wcard"><div class="wtop"><span class="tk">${w}</span></div></div>`;
+  if(w.rank!==undefined){   // UMD 모멘텀 순위 대기열
+    return `<div class="wcard">
+      <div class="wtop"><span class="tk">${w.ticker}</span><span class="gap">모멘텀 ${w.rank}위</span></div>
+      ${koLine(w.ticker,'wko')}
+      <div class="wprices">
+        <div class="item"><div class="k">현재가</div><div class="v">$${fmt(w.last)}</div></div>
+        <div class="item"><div class="k">12개월 모멘텀</div><div class="v tgt">${(w.mom_pct>0?'+':'')+w.mom_pct.toFixed(1)}%</div></div>
+      </div>
+      <div class="wnote">상위 15위 안에 들면 매수 (월말 리밸런스 기준)</div>
+    </div>`;
+  }
   const broke = w.gap_pct<=0;                       // 이미 돌파가 위 → 거래량 대기
   const prog = broke ? 100 : Math.max(6, Math.min(99, w.last/w.pivot*100));
   const gapTxt = broke ? "돌파 완료" : "+"+w.gap_pct.toFixed(1)+"%";
@@ -282,30 +301,39 @@ function cardWatch(w){
 }
 
 function render(){
-  const d=DATA, s=d.summary;
-  const banner = d.today_buys.length
-    ? `<div class="banner on"><span class="ico">🔔</span><span>오늘 매수 신호 ${d.today_buys.length}건 — <b>${d.today_buys.join(", ")}</b><br>종가 매수 후 토스 자동주문으로 손절가를 걸어두세요.</span></div>`
-    : `<div class="banner off"><span class="ico">☕️</span><span>오늘(${d.market_date}) 신규 매수 신호가 없습니다.</span></div>`;
+  const root=DATA;
+  if(!root || !root.strategies){ document.getElementById("content").innerHTML=`<div class="empty"><span class="em">⏳</span>데이터 업데이트 중입니다.<br>잠시 후 새로고침해 주세요.</div>`; return; }
+  if(!root.strategies[curStrat]) curStrat=(root.order||Object.keys(root.strategies))[0];
+  const S=root.strategies[curStrat], s=S.summary;
+  const order=root.order||Object.keys(root.strategies);
+  const strat = `<div class="strat">${order.map(k=>`<button class="${k===curStrat?'on':''}" onclick="setStrat('${k}')">${root.strategies[k].label}</button>`).join("")}</div>`;
+  const desc = `<div class="sdesc">${S.desc}</div>`;
+  const banner = S.today_buys.length
+    ? `<div class="banner on"><span class="ico">🔔</span><span>오늘 매수 신호 ${S.today_buys.length}건 — <b>${S.today_buys.join(", ")}</b><br>종가 매수 후 토스 자동주문으로 관리하세요.</span></div>`
+    : `<div class="banner off"><span class="ico">☕️</span><span>오늘(${root.market_date}) 신규 매수 신호가 없습니다.</span></div>`;
   const seg = `<div class="seg">
-      <button class="${tab==='hold'?'on':''}" onclick="setTab('hold')">보유<span class="cnt">${d.positions.length}</span></button>
-      <button class="${tab==='closed'?'on':''}" onclick="setTab('closed')">편출<span class="cnt">${d.closed.length}</span></button>
-      <button class="${tab==='watch'?'on':''}" onclick="setTab('watch')">관심권<span class="cnt">${d.watch.length}</span></button>
+      <button class="${tab==='hold'?'on':''}" onclick="setTab('hold')">보유<span class="cnt">${S.positions.length}</span></button>
+      <button class="${tab==='closed'?'on':''}" onclick="setTab('closed')">편출<span class="cnt">${S.closed.length}</span></button>
+      <button class="${tab==='watch'?'on':''}" onclick="setTab('watch')">관심권<span class="cnt">${S.watch.length}</span></button>
     </div>`;
+  const whead = S.mode==="rank"
+    ? `<div class="watch-head"><b>모멘텀 상위 진입 대기</b> 종목 (16위~)<br>월말 리밸런스에서 상위 15위 안에 들면 편입됩니다.</div>`
+    : `<div class="watch-head"><b>조건 충족</b> · 50일 신고가 <b>돌파 대기</b> 종목<br>돌파 목표가 위로 종가 마감하면 매수 신호가 뜹니다.</div>`;
   let body="";
   if(tab==="hold")
-    body = d.positions.length ? `<div class="list">${d.positions.map(rowHold).join("")}</div>`
+    body = S.positions.length ? `<div class="list">${S.positions.map(rowHold).join("")}</div>`
                               : `<div class="empty"><span class="em">📭</span>보유 중인 종목이 없습니다</div>`;
   if(tab==="closed")
-    body = d.closed.length ? `<div class="list">${d.closed.map(rowClosed).join("")}</div>`
+    body = S.closed.length ? `<div class="list">${S.closed.map(rowClosed).join("")}</div>`
                            : `<div class="empty"><span class="em">🌱</span>아직 편출된 종목이 없습니다<br><span style="font-size:12.5px;color:var(--grey400)">지금부터 새로 기록을 시작합니다</span></div>`;
   if(tab==="watch")
-    body = d.watch.length
-      ? `<div class="watch-head"><b>미너비니 8조건 충족</b> · 50일 신고가 <b>돌파 대기</b> 종목<br>돌파 목표가 위로 종가 마감하면 매수 신호가 뜹니다.</div>${d.watch.map(cardWatch).join("")}`
-      : `<div class="empty"><span class="em">🔍</span>관심권 종목이 없습니다</div>`;
+    body = S.watch.length ? `${whead}${S.watch.map(cardWatch).join("")}`
+                          : `<div class="empty"><span class="em">🔍</span>관심권 종목이 없습니다</div>`;
   document.getElementById("content").innerHTML = `
+    ${strat}${desc}
     <div class="hero">
-      <div class="lbl">보유 종목 평균 수익률</div>
-      <div class="big ${s.avg_ret>0?'':''}">${sign(s.avg_ret)}</div>
+      <div class="lbl">${S.label} · 보유 평균 수익률</div>
+      <div class="big">${sign(s.avg_ret)}</div>
       <div class="grid">
         <div class="cell"><div class="v">${s.open_count}종목</div><div class="k">보유</div></div>
         <div class="cell"><div class="v">${s.win_rate}%</div><div class="k">편출 승률</div></div>
@@ -313,9 +341,10 @@ function render(){
       </div>
     </div>
     ${banner}${seg}${body}`;
-  document.getElementById("upd").textContent = "업데이트 " + d.updated;
+  document.getElementById("upd").textContent = "업데이트 " + root.updated;
 }
 function setTab(t){tab=t;render();}
+function setStrat(k){curStrat=k;tab='hold';render();}
 
 fetch("data.json?t=" + Date.now())
   .then(r => { if(!r.ok) throw 0; return r.json(); })
