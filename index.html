@@ -906,7 +906,7 @@ function renderCalc(strat, root){
       <div class="clabel">💰 가진 금액을 넣으면 <b>40/35/25 비중</b>으로 종목마다 얼마씩 살지 계산해줘요</div>
       <div class="cinput">
         <div class="ccur">${curBtns}</div>
-        <input id="calcAmt" type="number" inputmode="decimal" value="${calcAmt}" oninput="onCalcInput(this.value)" placeholder="투자금액">
+        <input id="calcAmt" type="text" inputmode="numeric" value="${calcAmt?calcAmt.toLocaleString('en-US'):''}" oninput="onCalcInput(this.value)" placeholder="투자금액">
       </div>
       <div class="cfx">환율 <input type="number" value="${calcFx}" oninput="onCalcFx(this.value)"> 원/$ <span class="cmut">· 미국주식은 달러로 매수돼요</span></div>
       <div id="calcResult"></div>
@@ -914,7 +914,13 @@ function renderCalc(strat, root){
   recalcBuy();
   document.getElementById("upd").textContent = "업데이트 " + root.updated;
 }
-function onCalcInput(v){ calcAmt=parseFloat(v)||0; try{localStorage.setItem("calcAmt",calcAmt);}catch(e){} recalcBuy(); }
+function onCalcInput(v){
+  calcAmt = parseFloat(String(v).replace(/[^0-9.]/g,"")) || 0;
+  try{localStorage.setItem("calcAmt",calcAmt);}catch(e){}
+  const inp=document.getElementById("calcAmt");
+  if(inp) inp.value = calcAmt ? calcAmt.toLocaleString("en-US",{maximumFractionDigits:0}) : "";
+  recalcBuy();
+}
 function onCalcFx(v){ calcFx=parseFloat(v)||1350; try{localStorage.setItem("calcFx",calcFx);}catch(e){} recalcBuy(); }
 function setCalcCur(c){ calcCur=c; try{localStorage.setItem("calcCur",c);}catch(e){} render(); }
 
