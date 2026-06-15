@@ -1,0 +1,33 @@
+name: strategy-backtest
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install yfinance pandas lxml numpy curl_cffi
+      - name: Run backtest
+        run: python backtest_strategies.py
+      - name: Commit results
+        run: |
+          git config user.name "smo1234112"
+          git config user.email "5semmm@naver.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT || github.token }}@github.com/${{ github.repository }}
+          git add backtest_results.md
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "backtest: 전략 비교 결과 갱신"
+            git push
+          fi
