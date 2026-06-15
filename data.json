@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-15 08:15",
+ "updated": "2026-06-15 09:21",
  "market_date": "2026-06-12",
  "start_date": "6월 11일",
  "order": [
@@ -143,18 +143,18 @@
      "vol_ratio": 1.0
     },
     {
-     "ticker": "AIZ",
-     "last": 260.99,
-     "pivot": 260.51,
-     "gap_pct": -0.18,
-     "vol_ratio": 0.6
-    },
-    {
      "ticker": "TFC",
      "last": 51.66,
      "pivot": 51.57,
      "gap_pct": -0.18,
      "vol_ratio": 1.1
+    },
+    {
+     "ticker": "AIZ",
+     "last": 260.99,
+     "pivot": 260.51,
+     "gap_pct": -0.18,
+     "vol_ratio": 0.6
     },
     {
      "ticker": "PLD",
@@ -566,18 +566,18 @@
      "vol_ratio": 1.0
     },
     {
-     "ticker": "AIZ",
-     "last": 260.99,
-     "pivot": 260.51,
-     "gap_pct": -0.18,
-     "vol_ratio": 0.6
-    },
-    {
      "ticker": "TFC",
      "last": 51.66,
      "pivot": 51.57,
      "gap_pct": -0.18,
      "vol_ratio": 1.1
+    },
+    {
+     "ticker": "AIZ",
+     "last": 260.99,
+     "pivot": 260.51,
+     "gap_pct": -0.18,
+     "vol_ratio": 0.6
     },
     {
      "ticker": "PLD",
@@ -727,18 +727,18 @@
      "vol_ratio": 0.6
     },
     {
-     "ticker": "PPG",
-     "last": 119.34,
-     "pivot": 118.55,
-     "gap_pct": -0.66,
-     "vol_ratio": 0.9
-    },
-    {
      "ticker": "PNC",
      "last": 237.66,
      "pivot": 236.09,
      "gap_pct": -0.66,
      "vol_ratio": 1.0
+    },
+    {
+     "ticker": "PPG",
+     "last": 119.34,
+     "pivot": 118.55,
+     "gap_pct": -0.66,
+     "vol_ratio": 0.9
     },
     {
      "ticker": "BNY",
@@ -785,8 +785,8 @@
    ]
   },
   "umd": {
-   "label": "UMD 모멘텀",
-   "desc": "매월 12-1개월 모멘텀 상위 15종목 보유 · 월말 리밸런스",
+   "label": "UMD 듀얼모멘텀",
+   "desc": "12-1개월 모멘텀 상위 15종목 + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
    "mode": "rank",
    "summary": {
     "open_count": 15,
@@ -1071,7 +1071,9 @@
      "rank": 35,
      "mom_pct": 85.9
     }
-   ]
+   ],
+   "cash": false,
+   "note": "📈 절대모멘텀 ON — 시장 상승추세라 상위 15종목 정상 보유"
   }
  }
 }
