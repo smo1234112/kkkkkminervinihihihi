@@ -24,10 +24,10 @@ jobs:
           git config user.name "smo1234112"
           git config user.email "5semmm@naver.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT || github.token }}@github.com/${{ github.repository }}
-          git add backtest_results.md
+          git add backtest_results.md trades_minervini.csv trades_stage.csv trades_umd.csv
           if git diff --cached --quiet; then
             echo "변경 없음"
           else
-            git commit -m "backtest: 전략 비교 결과 갱신"
+            git commit -m "backtest: 전략 비교 결과 + 월별·매매내역 갱신"
             git push
           fi

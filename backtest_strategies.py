@@ -253,6 +253,62 @@ def metrics(curve, rets, trades):
     al=tr[tr<=0].mean()*100 if (tr<=0).any() else 0
     return dict(tot=tot,cagr=cagr,mdd=mdd,sharpe=sharpe,vol=vol,expo=expo,nt=nt,win=win,aw=aw,al=al)
 
+def trades_from_sets(sets, data, test_dates):
+    """집합 멤버십 변화에서 실제 매매(진입→청산)를 복원: 종목·매수일·매수가·매도일·매도가·손익%."""
+    open_pos = {}; trades = []; prev = frozenset()
+    for k, dt in enumerate(test_dates):
+        cur = sets[k]; ds = str(dt.date())
+        for t in cur - prev:
+            i = data[t]["posmap"].get(dt)
+            if i is not None: open_pos[t] = (ds, float(data[t]["c"][i]))
+        for t in prev - cur:
+            i = data[t]["posmap"].get(dt)
+            if t in open_pos and i is not None:
+                ed, ep = open_pos.pop(t); xp = float(data[t]["c"][i])
+                trades.append(dict(ticker=t, entry_date=ed, entry=round(ep, 2), exit_date=ds,
+                                   exit=round(xp, 2), ret_pct=round((xp/ep-1)*100, 2)))
+        prev = cur
+    for t, (ed, ep) in open_pos.items():
+        i = data[t]["posmap"].get(test_dates[-1]); xp = float(data[t]["c"][i]) if i is not None else ep
+        trades.append(dict(ticker=t, entry_date=ed, entry=round(ep, 2), exit_date="보유중",
+                           exit=round(xp, 2), ret_pct=round((xp/ep-1)*100, 2)))
+    return trades
+
+def monthly_returns(curve, test_dates):
+    last_idx = {}
+    for k, dt in enumerate(test_dates): last_idx[(dt.year, dt.month)] = k
+    months = sorted(last_idx.keys()); out = {}
+    for j, m in enumerate(months):
+        base = curve[last_idx[months[j-1]]] if j > 0 else 1.0
+        out[m] = (curve[last_idx[m]]/base - 1)*100
+    return out, months
+
+def monthly_md(name, curve, test_dates):
+    mr, months = monthly_returns(curve, test_dates)
+    years = sorted({y for y, _ in months})
+    L = [f"**{name}**", "", "| 연도 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 연간 |", "|---|" + "---|"*13]
+    for y in years:
+        cells = []; yf = 1.0
+        for mo in range(1, 13):
+            if (y, mo) in mr:
+                v = mr[(y, mo)]; cells.append(f"{v:+.1f}"); yf *= (1 + v/100)
+            else:
+                cells.append("·")
+        L.append(f"| {y} | " + " | ".join(cells) + f" | **{(yf-1)*100:+.1f}** |")
+    return "\n".join(L)
+
+def trades_md(name, trades):
+    closed = [t for t in trades if t["exit_date"] != "보유중"]
+    n = len(closed); wins = sum(1 for t in closed if t["ret_pct"] > 0)
+    wr = wins/n*100 if n else 0
+    srt = sorted(closed, key=lambda t: -t["ret_pct"])
+    sample = (srt[:6] + srt[-6:]) if len(srt) > 12 else srt
+    L = [f"**{name}** — 총 {len(trades)}건 (청산 {n} · 승률 {wr:.0f}%) · 큰 수익/손실 일부",
+         "", "| 종목 | 매수일 | 매수가 | 매도일 | 매도가 | 손익% |", "|---|---|---|---|---|---|"]
+    for t in sample:
+        L.append(f"| {t['ticker']} | {t['entry_date']} | ${t['entry']} | {t['exit_date']} | ${t['exit']} | {t['ret_pct']:+.1f}% |")
+    return "\n".join(L)
+
 def main():
     print("=== 유명 전략 비교 백테스트 (최근 5년) ===")
     uni=get_universe()
@@ -271,14 +327,15 @@ def main():
     test_dates=all_dates[-TEST_DAYS:]
     print(f"기간 {test_dates[0].date()}~{test_dates[-1].date()} | 유효 {len(data)}종목\n")
 
-    rows=[]; curves={}
+    rows=[]; curves={}; keep={}
     for name,e,x in SIGNAL_STRATS:
         sets=build_sets_signal(e,x,data,test_dates)
+        if name in ("Minervini","Stage(Weinstein)"): keep[name]=sets
         curve,rets,trades=simulate(sets,data,test_dates)
         m=metrics(curve,rets,trades); m["name"]=name; rows.append(m); curves[name]=curve
         print(f"[{name}] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']} 승률 {m['win']:.0f}%")
     # UMD
-    sets=build_sets_umd(data,test_dates); curve,rets,trades=simulate(sets,data,test_dates)
+    sets=build_sets_umd(data,test_dates); keep["UMD(횡단모멘텀)"]=sets; curve,rets,trades=simulate(sets,data,test_dates)
     m=metrics(curve,rets,trades); m["name"]="UMD(횡단모멘텀)"; rows.append(m); curves[m["name"]]=curve
     print(f"[UMD] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']} 승률 {m['win']:.0f}%")
     # 벤치마크
@@ -343,8 +400,36 @@ def main():
         seen.add(nm)
         cells=" | ".join(f"{yret(curves[nm],idx):+.0f}%" for idx in range(len(years)))
         md.append(f"| {nm} | {cells} |")
+
+    # ── 방법론 ──
+    md += ["","## 백테스트 방법 (어떻게 돌렸나)","",
+        "1. **유니버스**: S&P500+나스닥100(위키 자동수집), 야후 일봉(분할·배당 조정 auto_adjust).",
+        "2. **신호 평가**: 각 전략 규칙을 매 거래일 종가에 계산. 종가 신호 → **다음날 종가까지 수익 반영**(룩어헤드 없음).",
+        "3. **포트폴리오**: 신호 종목을 **동일비중**으로 전부 보유(개수 제한 없음). 집합 변동 시 동일비중 리밸런스, 회전율×수수료(편도 0.1%) 차감.",
+        "4. **블렌드**: 단일전략 수익곡선을 UMD 40 / 미너비니 35 / Stage 25로 **월말 리밸런스** 합성.",
+        "5. **한계**: 일봉 종가 근사 — 갭/장중 체결·숏·세금 미반영. 절대수익보다 동일조건 상대비교용.",""]
+
+    # ── 월별 수익률 ──
+    md += ["## 월별 수익률 (%)",""]
+    for nm in ["블렌드 40/35/25","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)"]:
+        if nm in curves: md += [monthly_md(nm, curves[nm], test_dates), ""]
+
+    # ── 매매내역 + CSV ──
+    import csv as _csv
+    md += ["## 매매내역 (실제 진입→청산)","",
+        "- 전체 매매는 `trades_minervini.csv` / `trades_stage.csv` / `trades_umd.csv` 에 저장(저장소).",""]
+    for key, fn, kor in [("Minervini","trades_minervini.csv","미너비니"),
+                          ("Stage(Weinstein)","trades_stage.csv","Stage"),
+                          ("UMD(횡단모멘텀)","trades_umd.csv","UMD")]:
+        if key in keep:
+            trs = trades_from_sets(keep[key], data, test_dates)
+            with open(fn, "w", newline="", encoding="utf-8-sig") as f:
+                w = _csv.DictWriter(f, fieldnames=["ticker","entry_date","entry","exit_date","exit","ret_pct"])
+                w.writeheader(); w.writerows(trs)
+            md += [trades_md(kor, trs), ""]
+
     open("backtest_results.md","w",encoding="utf-8").write("\n".join(md))
-    print("\n".join(md))
+    print("저장: backtest_results.md + trades_*.csv")
     print("\nbacktest_results.md 저장 완료")
 
 if __name__=="__main__":
