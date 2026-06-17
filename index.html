@@ -184,9 +184,60 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
   color:#fff;font-size:13px;font-weight:700;border-radius:12px;padding:11px 18px;opacity:0;
   transition:all .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ───── 로그인 게이트 ───── */
+#gate{position:fixed;inset:0;z-index:200;background:var(--greyBg);overflow:auto;display:flex;justify-content:center}
+.gate-inner{width:100%;max-width:520px;background:var(--bg);min-height:100vh;padding:42px 26px 36px;display:flex;flex-direction:column}
+.gbrand{font-size:12px;font-weight:800;color:var(--blue500);letter-spacing:1px}
+.gtitle{font-size:27px;font-weight:800;letter-spacing:-.7px;margin-top:8px}
+.gsub{font-size:14px;color:var(--grey500);font-weight:600;margin-top:8px;margin-bottom:22px}
+.gacct{position:relative;background:linear-gradient(135deg,#2D3D5C 0%,#161E30 100%);color:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 12px 26px rgba(22,30,48,.26)}
+.gacct-l{font-size:12px;font-weight:700;opacity:.7}
+.gacct-no{font-size:22px;font-weight:800;letter-spacing:.6px;margin-top:6px}
+.gacct-b{font-size:13px;font-weight:600;opacity:.82;margin-top:5px}
+.gcopy{position:absolute;right:15px;top:15px;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:800;border-radius:9px;padding:7px 12px;cursor:pointer}
+.gcopy:active{background:rgba(255,255,255,.28)}
+.gplan{margin-top:14px;border:2px solid var(--blue500);border-radius:18px;padding:16px 18px;background:var(--blue50)}
+.gplan-tag{display:inline-block;background:var(--blue500);color:#fff;font-size:11px;font-weight:800;border-radius:7px;padding:4px 10px;letter-spacing:-.2px}
+.gplan-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:13px}
+.gplan-row span{font-size:14px;font-weight:700;color:var(--grey700)}
+.gplan-row b{font-size:25px;font-weight:800;color:var(--blue600);letter-spacing:-.6px}
+.gplan-feat{font-size:12px;color:var(--grey600);font-weight:600;margin-top:9px;line-height:1.55}
+#gcode{margin-top:26px;width:100%;border:0;background:var(--grey100);border-radius:15px;padding:19px 0;font-size:24px;font-weight:800;text-align:center;letter-spacing:14px;color:var(--grey900);text-indent:14px}
+#gcode:focus{outline:2px solid var(--blue500);background:#fff}
+.gbtn{margin-top:12px;width:100%;border:0;background:var(--blue500);color:#fff;font-size:16px;font-weight:800;border-radius:15px;padding:18px 0;cursor:pointer;transition:background .15s,transform .1s}
+.gbtn:active{background:var(--blue600);transform:scale(.99)}
+.gerr{margin-top:13px;text-align:center;font-size:13px;font-weight:700;color:var(--red500);min-height:18px}
+.gfoot{margin-top:auto;padding-top:24px;text-align:center;font-size:11px;color:var(--grey400);font-weight:600;line-height:1.6}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 </style>
 </head>
 <body>
+<div id="gate">
+  <div class="gate-inner">
+    <div class="gbrand">VALLEY AI · EXPERT</div>
+    <div class="gtitle">Gabriel Oh 전략실</div>
+    <div class="gsub">전문가 전용 · 로그인 코드를 입력하세요</div>
+
+    <div class="gacct">
+      <div class="gacct-l">입금 계좌</div>
+      <div class="gacct-no">940302-00771486</div>
+      <div class="gacct-b">국민은행 · 예금주 오세민</div>
+      <button class="gcopy" onclick="copyAcct()">복사</button>
+    </div>
+
+    <div class="gplan">
+      <div class="gplan-tag">★ 추천 · Expert 전용</div>
+      <div class="gplan-row"><span>월 구독료</span><b>300,000원</b></div>
+      <div class="gplan-feat">3전략(미너비니·Stage·UMD 듀얼모멘텀) · 5년 백테스트 · 비중 계산기 · 매일 실시간 신호 전부 포함</div>
+    </div>
+
+    <input id="gcode" type="tel" inputmode="numeric" maxlength="4" placeholder="○ ○ ○ ○" oninput="onGcode()" onkeydown="if(event.key==='Enter')checkCode()">
+    <button class="gbtn" onclick="checkCode()">입장하기</button>
+    <div class="gerr" id="gerr"></div>
+  </div>
+</div>
 <div class="app">
   <div class="dollung"><span class="hb">♥</span>돌룽이<span class="hb">♥</span></div>
   <div class="nav">
@@ -941,6 +992,24 @@ fetch("data.json?t=" + Date.now())
     document.getElementById("content").innerHTML =
       `<div class="empty"><span class="em">⚠️</span>data.json을 불러오지 못했습니다.<br>잠시 후 새로고침해 주세요.</div>`;
   });
+
+/* ───── 로그인 게이트 ───── */
+const GATE_CODE = "1511";
+function copyAcct(){ try{ navigator.clipboard.writeText("940302-00771486"); }catch(e){} toast("계좌번호가 복사됐어요"); }
+function onGcode(){ document.getElementById("gerr").textContent=""; }
+function checkCode(){
+  const g=document.getElementById("gcode"), v=(g.value||"").trim();
+  if(v===GATE_CODE){
+    try{ localStorage.setItem("vauth","1"); }catch(e){}
+    const gate=document.getElementById("gate");
+    gate.style.opacity="0"; setTimeout(()=>gate.style.display="none",200);
+  } else {
+    document.getElementById("gerr").textContent="로그인 코드가 올바르지 않습니다";
+    g.classList.add("shake"); g.value=""; setTimeout(()=>g.classList.remove("shake"),400);
+  }
+}
+try{ if(localStorage.getItem("vauth")==="1"){ const el=document.getElementById("gate"); if(el) el.style.display="none"; } }catch(e){}
+document.getElementById("gate").style.transition="opacity .2s";
 </script>
 </body>
 </html>
