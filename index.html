@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
 <title>Gabriel Oh 전략실</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -228,7 +229,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
       <div class="gacct-l">입금 계좌</div>
       <div class="gacct-no">940302-00771486</div>
       <div class="gacct-b">국민은행 · 예금주 오세민</div>
-      <button class="gcopy" onclick="copyAcct()">복사</button>
+      <button class="gcopy" onclick="copyAcct(this)">복사</button>
     </div>
 
     <div class="gplan">
@@ -1000,7 +1001,20 @@ fetch("data.json?t=" + Date.now())
 
 /* ───── 로그인 게이트 ───── */
 const GATE_CODE = "1511";
-function copyAcct(){ try{ navigator.clipboard.writeText("940302-00771486"); }catch(e){} toast("계좌번호가 복사됐어요"); }
+function fallbackCopy(txt){
+  try{ const ta=document.createElement("textarea"); ta.value=txt; ta.readOnly=true;
+    ta.style.position="fixed"; ta.style.top="0"; ta.style.opacity="0"; document.body.appendChild(ta);
+    ta.focus(); ta.select(); ta.setSelectionRange(0, txt.length); document.execCommand("copy"); document.body.removeChild(ta); }catch(e){}
+}
+function copyAcct(btn){
+  const no="940302-00771486";
+  const done=()=>{ if(btn){ const t=btn.textContent; btn.textContent="복사됨!"; setTimeout(()=>{btn.textContent=t;},1500); } };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(no).then(done, ()=>{ fallbackCopy(no); done(); });
+    } else { fallbackCopy(no); done(); }
+  }catch(e){ fallbackCopy(no); done(); }
+}
 function onGcode(){ document.getElementById("gerr").textContent=""; }
 function checkCode(){
   const g=document.getElementById("gcode"), v=(g.value||"").trim();
