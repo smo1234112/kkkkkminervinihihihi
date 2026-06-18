@@ -152,6 +152,7 @@ def dv_x(d,i,e): return d["c"][i]<=e*0.90 or (not nan(d["lo20p"][i]) and d["c"][
 def st_e(d,i): return (not nan(d["sma150"][i]) and d["c"][i]>d["sma150"][i] and d["sma150"][i]>d["sma150"][i-22]
                        and not nan(d["hi50p"][i]) and d["c"][i]>d["hi50p"][i] and not nan(d["vol50"][i]) and d["v"][i]>1.5*d["vol50"][i])
 def st_x(d,i,e): return not nan(d["sma150"][i]) and d["c"][i]<d["sma150"][i]
+def st_stop_x(d,i,e): return d["c"][i]<=e*0.92 or (not nan(d["sma150"][i]) and d["c"][i]<d["sma150"][i])  # Stage + -8% 손절
 def tt_e(d,i): return not nan(d["hi20p"][i]) and d["c"][i]>d["hi20p"][i]
 def tt_x(d,i,e): return not nan(d["lo10p"][i]) and d["c"][i]<d["lo10p"][i]
 def dc_e(d,i): return not nan(d["hi55p"][i]) and d["c"][i]>d["hi55p"][i]
@@ -163,7 +164,8 @@ def ibs_x(d,i,e): return not nan(d["ibs"][i]) and d["ibs"][i]>0.5
 
 SIGNAL_STRATS = [
     ("Minervini", mn_e, mn_x), ("Qullamaggie", ql_e, ql_x), ("Darvas", dv_e, dv_x),
-    ("Stage(Weinstein)", st_e, st_x), ("Turtle(20일)", tt_e, tt_x), ("Donchian(55일)", dc_e, dc_x),
+    ("Stage(Weinstein)", st_e, st_x), ("Stage(-8%손절)", st_e, st_stop_x),
+    ("Turtle(20일)", tt_e, tt_x), ("Donchian(55일)", dc_e, dc_x),
     ("ConnorsRSI(2)", rsi_e, rsi_x), ("IBS반전", ibs_e, ibs_x),
 ]
 
@@ -309,10 +311,51 @@ def trades_md(name, trades):
         L.append(f"| {t['ticker']} | {t['entry_date']} | ${t['entry']} | {t['exit_date']} | ${t['exit']} | {t['ret_pct']:+.1f}% |")
     return "\n".join(L)
 
+def _blend2_window(a, b, wd):
+    ra = np.concatenate([[0.0], np.diff(a)/a[:-1]]); rb = np.concatenate([[0.0], np.diff(b)/b[:-1]])
+    o = []; eq = 1.0; sa = 0.5; sb = 0.5; lm = None
+    for idx, dt in enumerate(wd):
+        m = (dt.year, dt.month)
+        if m != lm: sa = eq*0.5; sb = eq*0.5; lm = m
+        if idx > 0: sa *= (1+ra[idx]); sb *= (1+rb[idx]); eq = sa+sb
+        o.append(eq)
+    return np.array(o)
+
+def run_window(label, start, end, data, all_dates, frames):
+    wd = [dt for dt in all_dates if start <= str(dt.date()) <= end]
+    out = [f"### {label}", f"- 구간 {wd[0].date()}~{wd[-1].date()} · ⚠️ 생존편향(현재 지수 구성종목만) → 실제보다 낙관적. 방향성 참고용", ""]
+    if len(wd) < 120: return out + ["데이터 부족", ""]
+    cv = {}
+    cv["UMD 단독"] = simulate(build_sets_umd(data, wd), data, wd)[0]
+    cstage = simulate(build_sets_signal(st_e, st_x, data, wd), data, wd)[0]
+    cstop = simulate(build_sets_signal(st_e, st_stop_x, data, wd), data, wd)[0]
+    cv["Stage 단독"] = cstage
+    cv["Stage+UMD"] = _blend2_window(cstage, cv["UMD 단독"], wd)
+    cv["Stage(-8%)+UMD"] = _blend2_window(cstop, cv["UMD 단독"], wd)
+    for bn in ["SPY", "QQQ"]:
+        if bn in frames:
+            px = frames[bn]["Close"].dropna().reindex(wd).ffill().values
+            if not np.isnan(px[0]): cv[bn+" 보유"] = px/px[0]
+    years = sorted({dt.year for dt in wd}); pl = {}
+    for k, dt in enumerate(wd): pl[dt.year] = k
+    def yr(c, idx):
+        base = c[pl[years[idx-1]]] if idx > 0 else 1.0
+        return (c[pl[years[idx]]]/base - 1)*100
+    out.append("| 전략 | " + " | ".join(str(y) for y in years) + " | 구간연환산 | 최대낙폭 |")
+    out.append("|---|" + "---|"*(len(years)+2))
+    for nm in ["UMD 단독", "Stage+UMD", "Stage(-8%)+UMD", "Stage 단독", "SPY 보유", "QQQ 보유"]:
+        if nm not in cv: continue
+        c = cv[nm]; cells = " | ".join(f"{yr(c,idx):+.0f}%" for idx in range(len(years)))
+        yrs = len(wd)/252.0; cagr = ((c[-1]/c[0])**(1/yrs)-1)*100
+        peak = np.maximum.accumulate(c); mdd = ((c-peak)/peak).min()*100
+        out.append(f"| {nm} | {cells} | **{cagr:+.0f}%** | {mdd:.0f}% |")
+    out.append("")
+    return out
+
 def main():
     print("=== 유명 전략 비교 백테스트 (최근 5년) ===")
     uni=get_universe()
-    start=(datetime.now()-timedelta(days=2400)).strftime("%Y-%m-%d")
+    start="2008-06-01"   # 과거 유사국면(2009~11, 2016~18) 백테스트 포함 위해 장기 다운로드
     print(f"유니버스 {len(uni)} | {start}~ 다운로드...")
     frames=download_prices(set(uni)|{"SPY","QQQ"}, start)
     if "SPY" not in frames: sys.exit("SPY 실패")
@@ -359,7 +402,8 @@ def main():
             out.append(eq)
         return np.array(out)
     BLENDS = [("블렌드 40/35/25", {"Minervini": 0.35, "Stage(Weinstein)": 0.25, "UMD(횡단모멘텀)": 0.40}),
-              ("Stage+UMD 50/50", {"Stage(Weinstein)": 0.50, "UMD(횡단모멘텀)": 0.50})]
+              ("Stage+UMD 50/50", {"Stage(Weinstein)": 0.50, "UMD(횡단모멘텀)": 0.50}),
+              ("Stage(-8%)+UMD 50/50", {"Stage(-8%손절)": 0.50, "UMD(횡단모멘텀)": 0.50})]
     for bname, W in BLENDS:
         if all(k in curves for k in W):
             bc = _blend(W); br = np.diff(bc)/bc[:-1]
@@ -397,7 +441,7 @@ def main():
     md.append("| 전략 | " + " | ".join(ylabels) + " |")
     md.append("|---|" + "---|"*len(years))
     md.append("| **장세(SPY)** | " + " | ".join(f"{regime[i]} {spy_y[i]:+.0f}%" for i in range(len(years))) + " |")
-    order=["블렌드 40/35/25","Stage+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
+    order=["블렌드 40/35/25","Stage+UMD 50/50","Stage(-8%)+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","Stage(-8%손절)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
     seen=set()
     for nm in order + [r["name"] for r in rows]:
         if nm in seen or nm not in curves: continue
@@ -415,7 +459,7 @@ def main():
 
     # ── 월별 수익률 ──
     md += ["## 월별 수익률 (%)",""]
-    for nm in ["블렌드 40/35/25","Stage+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)"]:
+    for nm in ["블렌드 40/35/25","Stage+UMD 50/50","Stage(-8%)+UMD 50/50","UMD(횡단모멘텀)","Stage(Weinstein)"]:
         if nm in curves: md += [monthly_md(nm, curves[nm], test_dates), ""]
 
     # ── 매매내역 + CSV ──
@@ -431,6 +475,15 @@ def main():
                 w = _csv.DictWriter(f, fieldnames=["ticker","entry_date","entry","exit_date","exit","ret_pct"])
                 w.writeheader(); w.writerows(trs)
             md += [trades_md(kor, trs), ""]
+
+    # ── 과거 유사국면 백테스트 ──
+    md += ["","## 과거 유사국면 백테스트 (원자재·금 강세 + 신기술 사이클 초입 가정)","",
+        "- 다가올 환경 가정: 원자재/금 강세 + AI 사이클 초입. 역사적으로 비슷했던 구간으로 테스트.",
+        "- ⚠️ **생존편향**: 지금의 S&P500 구성종목만 사용 → 그 시절보다 결과가 낙관적입니다(망한 종목 빠짐). 절대수치보다 전략 간 상대비교용.",""]
+    for lab, s, e in [("2009~2011 · 금/원자재 붐 + 스마트폰·클라우드 사이클 초입", "2009-01-01", "2011-12-31"),
+                       ("2016~2018 · 원자재 반등 + 클라우드/AI 1차 사이클 초입", "2016-01-01", "2018-12-31")]:
+        try: md += run_window(lab, s, e, data, all_dates, frames)
+        except Exception as ex: md += [f"### {lab}", f"(계산 실패: {ex})", ""]
 
     open("backtest_results.md","w",encoding="utf-8").write("\n".join(md))
     print("저장: backtest_results.md + trades_*.csv")
