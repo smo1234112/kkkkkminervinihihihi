@@ -346,21 +346,25 @@ def main():
             m=metrics(cur,rr,[]); m["name"]=f"{bn} 보유"; rows.append(m); curves[m["name"]]=cur
             print(f"[{bn}보유] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f}")
 
-    # ── 블렌드 포트폴리오 (UMD 40% / Minervini 35% / Stage 25%, 월말 리밸런스) ──
-    W = {"Minervini": 0.35, "Stage(Weinstein)": 0.25, "UMD(횡단모멘텀)": 0.40}
-    if all(k in curves for k in W):
+    # ── 블렌드 포트폴리오 (월말 리밸런스) ──
+    def _blend(W):
         dr = {k: np.concatenate([[0.0], np.diff(curves[k])/curves[k][:-1]]) for k in W}
-        blend = []; eq = 1.0; sleeves = {k: W[k] for k in W}; lastm = None
+        out = []; eq = 1.0; sl = {k: W[k] for k in W}; lastm = None
         for idx, dt in enumerate(test_dates):
             m = (dt.year, dt.month)
-            if m != lastm: sleeves = {k: eq*W[k] for k in W}; lastm = m   # 월말 리밸런스
+            if m != lastm: sl = {k: eq*W[k] for k in W}; lastm = m   # 월말 리밸런스
             if idx > 0:
-                for k in W: sleeves[k] *= (1 + dr[k][idx])
-                eq = sum(sleeves.values())
-            blend.append(eq)
-        blend = np.array(blend); brets = np.diff(blend)/blend[:-1]
-        mb = metrics(blend, brets, []); mb["name"] = "블렌드 40/35/25"; rows.append(mb); curves[mb["name"]] = blend
-        print(f"[블렌드 40/35/25] CAGR {mb['cagr']:+.1f}% MDD {mb['mdd']:.1f}% Sharpe {mb['sharpe']:.2f}")
+                for k in W: sl[k] *= (1 + dr[k][idx])
+                eq = sum(sl.values())
+            out.append(eq)
+        return np.array(out)
+    BLENDS = [("블렌드 40/35/25", {"Minervini": 0.35, "Stage(Weinstein)": 0.25, "UMD(횡단모멘텀)": 0.40}),
+              ("Stage+UMD 50/50", {"Stage(Weinstein)": 0.50, "UMD(횡단모멘텀)": 0.50})]
+    for bname, W in BLENDS:
+        if all(k in curves for k in W):
+            bc = _blend(W); br = np.diff(bc)/bc[:-1]
+            mb = metrics(bc, br, []); mb["name"] = bname; rows.append(mb); curves[bname] = bc
+            print(f"[{bname}] CAGR {mb['cagr']:+.1f}% MDD {mb['mdd']:.1f}% Sharpe {mb['sharpe']:.2f}")
 
     rows.sort(key=lambda r:-r["cagr"])
 
@@ -393,7 +397,7 @@ def main():
     md.append("| 전략 | " + " | ".join(ylabels) + " |")
     md.append("|---|" + "---|"*len(years))
     md.append("| **장세(SPY)** | " + " | ".join(f"{regime[i]} {spy_y[i]:+.0f}%" for i in range(len(years))) + " |")
-    order=["블렌드 40/35/25","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
+    order=["블렌드 40/35/25","Stage+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
     seen=set()
     for nm in order + [r["name"] for r in rows]:
         if nm in seen or nm not in curves: continue
@@ -411,7 +415,7 @@ def main():
 
     # ── 월별 수익률 ──
     md += ["## 월별 수익률 (%)",""]
-    for nm in ["블렌드 40/35/25","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)"]:
+    for nm in ["블렌드 40/35/25","Stage+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)"]:
         if nm in curves: md += [monthly_md(nm, curves[nm], test_dates), ""]
 
     # ── 매매내역 + CSV ──
