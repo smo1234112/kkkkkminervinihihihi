@@ -352,10 +352,43 @@ def run_window(label, start, end, data, all_dates, frames):
     out.append("")
     return out
 
+def run_long(label, start, end, data, all_dates, frames):
+    wd = [dt for dt in all_dates if start <= str(dt.date()) <= end]
+    out = [f"### {label}", f"- 구간 {wd[0].date()}~{wd[-1].date()} · ⚠️ 생존편향 심함(20년 전 구성종목 다수 변경·상장폐지) → 방향성만", ""]
+    if len(wd) < 200: return out + ["데이터 부족", ""]
+    cv = {}
+    cv["UMD 단독"] = simulate(build_sets_umd(data, wd), data, wd)[0]
+    cstage = simulate(build_sets_signal(st_e, st_x, data, wd), data, wd)[0]
+    cv["Stage+UMD"] = _blend2_window(cstage, cv["UMD 단독"], wd)
+    for bn in ["QQQ", "SPY"]:
+        if bn in frames:
+            px = frames[bn]["Close"].dropna().reindex(wd).ffill().values
+            if not np.isnan(px[0]): cv[bn+" 보유"] = px/px[0]
+    cols = [c for c in ["UMD 단독", "QQQ 보유", "SPY 보유", "Stage+UMD"] if c in cv]
+    years = sorted({dt.year for dt in wd}); pl = {}
+    for k, dt in enumerate(wd): pl[dt.year] = k
+    def yr(c, idx):
+        base = c[pl[years[idx-1]]] if idx > 0 else 1.0
+        return (c[pl[years[idx]]]/base - 1)*100
+    out.append("| 연도 | " + " | ".join(cols) + " |")
+    out.append("|---|" + "---|"*len(cols))
+    for idx, Y in enumerate(years):
+        out.append(f"| {Y} | " + " | ".join(f"{yr(cv[c],idx):+.0f}%" for c in cols) + " |")
+    yrs = len(wd)/252.0
+    def st(c):
+        cagr = ((c[-1]/c[0])**(1/yrs)-1)*100; tot = (c[-1]/c[0]-1)*100
+        peak = np.maximum.accumulate(c); mdd = ((c-peak)/peak).min()*100
+        return cagr, tot, mdd
+    out.append("| **연환산** | " + " | ".join(f"**{st(cv[c])[0]:+.0f}%**" for c in cols) + " |")
+    out.append("| 총수익 | " + " | ".join(f"{st(cv[c])[1]:+.0f}%" for c in cols) + " |")
+    out.append("| 최대낙폭 | " + " | ".join(f"{st(cv[c])[2]:+.0f}%" for c in cols) + " |")
+    out.append("")
+    return out
+
 def main():
     print("=== 유명 전략 비교 백테스트 (최근 5년) ===")
     uni=get_universe()
-    start="2008-06-01"   # 과거 유사국면(2009~11, 2016~18) 백테스트 포함 위해 장기 다운로드
+    start="2005-01-01"   # 20년 비교(2006~2026) + 과거 유사국면 위해 장기 다운로드
     print(f"유니버스 {len(uni)} | {start}~ 다운로드...")
     frames=download_prices(set(uni)|{"SPY","QQQ"}, start)
     if "SPY" not in frames: sys.exit("SPY 실패")
@@ -475,6 +508,12 @@ def main():
                 w = _csv.DictWriter(f, fieldnames=["ticker","entry_date","entry","exit_date","exit","ret_pct"])
                 w.writeheader(); w.writerows(trs)
             md += [trades_md(kor, trs), ""]
+
+    # ── 20년 비교 (2006~2026) ──
+    md += ["","## 20년 비교 (2006~2026) · UMD 단독 vs QQQ 단독","",
+        "- ⚠️ **생존편향 매우 큼**: 지금의 S&P500 구성종목만 사용 → 20년 전 실제보다 크게 낙관적. 절대수치보다 두 전략 간 상대비교용.",""]
+    try: md += run_long("UMD 단독 vs QQQ 단독 (+SPY, Stage+UMD)", "2006-01-01", "2026-12-31", data, all_dates, frames)
+    except Exception as ex: md += [f"(20년 계산 실패: {ex})", ""]
 
     # ── 과거 유사국면 백테스트 ──
     md += ["","## 과거 유사국면 백테스트 (원자재·금 강세 + 신기술 사이클 초입 가정)","",
