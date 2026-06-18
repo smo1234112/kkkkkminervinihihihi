@@ -1,0 +1,33 @@
+name: etf-compare
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  etf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install yfinance pandas numpy curl_cffi
+      - name: Run ETF compare
+        run: python etf_compare.py
+      - name: Commit results
+        run: |
+          git config user.name "smo1234112"
+          git config user.email "5semmm@naver.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT || github.token }}@github.com/${{ github.repository }}
+          git add etf_compare.md
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "etf: 모멘텀 ETF 비교 결과"
+            git push
+          fi
