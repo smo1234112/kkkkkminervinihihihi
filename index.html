@@ -265,7 +265,8 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 const fmt = n => n==null ? "-" : Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sign = n => (n>0?"+":"") + Number(n).toFixed(2) + "%";
 const cls  = n => n>0 ? "pos" : (n<0 ? "neg" : "flat");
-let DATA=null, tab="hold", curStrat="minervini";
+let DATA=null, tab="hold", curStrat="umd";
+const SHOW=["umd"];   // 사이트에 표시할 전략 (UMD만)
 
 /* 티커 → "한글기업명 / 산업" (S&P500·나스닥100 주요 종목) */
 const NAMES = {
@@ -859,7 +860,9 @@ function render(){
   const root=DATA;
   if(!root || !root.strategies){ document.getElementById("content").innerHTML=`<div class="empty"><span class="em">⏳</span>데이터 업데이트 중입니다.<br>잠시 후 새로고침해 주세요.</div>`; return; }
   const order=root.order||Object.keys(root.strategies);
-  const strat = `<div class="strat">${order.map(k=>`<button class="${k===curStrat?'on':''}" onclick="setStrat('${k}')">${root.strategies[k].label}</button>`).join("")}<button class="calcbtn ${curStrat==='calc'?'on':''}" onclick="setStrat('calc')">💰 계산기</button></div>`;
+  const shown = SHOW.filter(k=>root.strategies[k]);
+  if(curStrat!=='calc' && !shown.includes(curStrat)) curStrat = shown[0];
+  const strat = `<div class="strat">${shown.map(k=>`<button class="${k===curStrat?'on':''}" onclick="setStrat('${k}')">${root.strategies[k].label}</button>`).join("")}<button class="calcbtn ${curStrat==='calc'?'on':''}" onclick="setStrat('calc')">💰 계산기</button></div>`;
   if(curStrat==='calc'){ renderCalc(strat, root); return; }
   if(!root.strategies[curStrat]) curStrat=order[0];
   const S=root.strategies[curStrat], s=S.summary;
@@ -909,7 +912,7 @@ function snoteHtml(S){
 }
 
 /* ───── 비중 계산기 (UMD 40 / 미너비니 35 / Stage 25) ───── */
-const WEIGHTS = {umd:0.40, minervini:0.35, stage:0.25};
+const WEIGHTS = {umd:1.0};
 let calcAmt = 10000, calcCur = "$", calcFx = 1350;
 try{ const a=localStorage.getItem("calcAmt"); if(a) calcAmt=parseFloat(a)||10000;
      const c=localStorage.getItem("calcCur"); if(c) calcCur=c;
@@ -918,7 +921,7 @@ const won = n => Math.round(Number(n)).toLocaleString("en-US");
 
 const SCOLOR = {minervini:"#3182F6", stage:"#15B886", umd:"#7048E8"};
 function buyPlan(){
-  const order=DATA.order||Object.keys(DATA.strategies);
+  const order=SHOW.filter(k=>DATA.strategies[k]);
   const budgetUSD = calcCur==="$" ? calcAmt : (calcAmt/(calcFx||1));
   const sleeves={}, byTicker={};
   for(const k of order){
@@ -963,14 +966,14 @@ function recalcBuy(){
     html+=`</div>`;
   }
   html+=`<div class="ctot">총 ₩${won(krw(total))} <span class="cmut">($${won(total)} · 환율 ${fx})</span></div>
-    <div class="cfoot">· 금액(₩ 또는 $)을 토스 해외주식 "금액으로 매수"에 그대로 넣으면 돼요(소수점 매수). 정수만 사려면 주식수 내림.<br>· <b>공통 보유</b> = 여러 전략이 동시에 가진 종목(배분액 합산). 색상 = 전략 구분.<br>· 비중 UMD 40 / 미너비니 35 / Stage 25, 전략 안에서는 종목 균등.</div>`;
+    <div class="cfoot">· 금액(₩ 또는 $)을 토스 해외주식 "금액으로 매수"에 그대로 넣으면 돼요(소수점 매수). 정수만 사려면 주식수 내림.<br>· UMD 듀얼모멘텀 보유 15종목에 <b>균등 배분</b>. 약세장(절대모멘텀 OFF)이면 현금 100%라 매수 종목이 없어요.</div>`;
   el.innerHTML=html;
 }
 function renderCalc(strat, root){
   const curBtns=["$","₩"].map(c=>`<button class="${calcCur===c?'on':''}" onclick="setCalcCur('${c}')">${c}</button>`).join("");
   document.getElementById("content").innerHTML = `${strat}
     <div class="calc">
-      <div class="clabel">💰 가진 금액을 넣으면 <b>40/35/25 비중</b>으로 종목마다 얼마씩 살지 계산해줘요</div>
+      <div class="clabel">💰 가진 금액을 넣으면 <b>UMD 15종목</b>에 균등 배분해서 종목마다 얼마씩 살지 계산해줘요</div>
       <div class="cinput">
         <div class="ccur">${curBtns}</div>
         <input id="calcAmt" type="text" inputmode="numeric" value="${calcAmt?calcAmt.toLocaleString('en-US'):''}" oninput="onCalcInput(this.value)" placeholder="투자금액">
