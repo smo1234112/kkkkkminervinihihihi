@@ -154,6 +154,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .wcard{background:var(--bg);border-radius:var(--r-m);box-shadow:var(--shadow-card);margin:0 16px 10px;padding:15px 16px}
 .wtop{display:flex;align-items:center;justify-content:space-between}
 .wtop .tk{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.rnum{display:inline-block;min-width:24px;text-align:center;background:var(--grey900);color:#fff;font-size:12px;font-weight:800;border-radius:7px;padding:2px 6px;margin-right:4px}
 .wko{font-size:11.5px;color:var(--grey500);font-weight:600;margin-top:3px;letter-spacing:-.2px}
 .wtop .gap{font-size:12px;font-weight:800;color:var(--blue600);background:var(--blue50);border-radius:8px;padding:4px 9px}
 .wtop .gap.broke{color:var(--red500);background:var(--red50)}
@@ -823,15 +824,16 @@ function rowClosed(c){
 /* 관심권: 8조건 충족 + 돌파 대기. 현재가/돌파목표가/남은%/거래량 표시 */
 function cardWatch(w){
   if(typeof w === "string") return `<div class="wcard"><div class="wtop"><span class="tk">${w}</span></div></div>`;
-  if(w.rank!==undefined){   // UMD 모멘텀 순위 대기열
+  if(w.rank!==undefined){   // UMD 실시간 모멘텀 순위
+    const tag = w.held ? '<span class="gap broke">⭐ 보유중</span>'
+              : (w.rank<=15 ? '<span class="gap">편입 예정</span>' : '<span class="gap" style="color:var(--grey500);background:var(--grey100)">대기</span>');
     return `<div class="wcard">
-      <div class="wtop"><span class="tk">${w.ticker}</span><span class="gap">모멘텀 ${w.rank}위</span></div>
+      <div class="wtop"><span class="tk"><span class="rnum">${w.rank}</span> ${w.ticker}</span>${tag}</div>
       ${koLine(w.ticker,'wko')}
       <div class="wprices">
         <div class="item"><div class="k">현재가</div><div class="v">$${fmt(w.last)}</div></div>
         <div class="item"><div class="k">12개월 모멘텀</div><div class="v tgt">${(w.mom_pct>0?'+':'')+w.mom_pct.toFixed(1)}%</div></div>
       </div>
-      <div class="wnote">상위 15위 안에 들면 매수 (월말 리밸런스 기준)</div>
     </div>`;
   }
   const broke = w.gap_pct<=0;                       // 이미 돌파가 위 → 거래량 대기
@@ -873,10 +875,10 @@ function render(){
   const seg = `<div class="seg">
       <button class="${tab==='hold'?'on':''}" onclick="setTab('hold')">보유<span class="cnt">${S.positions.length}</span></button>
       <button class="${tab==='closed'?'on':''}" onclick="setTab('closed')">편출<span class="cnt">${S.closed.length}</span></button>
-      <button class="${tab==='watch'?'on':''}" onclick="setTab('watch')">관심권<span class="cnt">${S.watch.length}</span></button>
+      <button class="${tab==='watch'?'on':''}" onclick="setTab('watch')">${S.mode==='rank'?'실시간 순위':'관심권'}<span class="cnt">${S.watch.length}</span></button>
     </div>`;
   const whead = S.mode==="rank"
-    ? `<div class="watch-head"><b>모멘텀 상위 진입 대기</b> 종목 (16위~)<br>월말 리밸런스에서 상위 15위 안에 들면 편입됩니다.</div>`
+    ? `<div class="watch-head"><b>실시간 모멘텀 순위 TOP 30</b> · ⭐=보유중<br>지금 기준 1~15위가 매수 대상이고, 월말 리밸런스 때 이 순위로 교체돼요.</div>`
     : `<div class="watch-head"><b>조건 충족</b> · 50일 신고가 <b>돌파 대기</b> 종목<br>돌파 목표가 위로 종가 마감하면 매수 신호가 뜹니다.</div>`;
   let body="";
   if(tab==="hold")

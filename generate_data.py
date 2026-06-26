@@ -245,20 +245,22 @@ def out_umd(label, desc, st, data, last_dt, market_date, risk_on=True):
     rankpos = {t: r+1 for r, (mv, t, px) in enumerate(ranked)}
     momof = {t: mv for mv, t, px in ranked}
     positions_out = []
-    for t, p in sorted(st["positions"].items(), key=lambda x: x[1]["date"], reverse=True):
+    for t, p in sorted(st["positions"].items(), key=lambda x: rankpos.get(x[0], 9999)):  # 현재 순위순 정렬
         d = data.get(t); i = d["pos_map"].get(last_dt) if d else None
         last = float(d["c"][i]) if i is not None else p["entry"]
         mv = momof.get(t)
-        sub = f"12개월 모멘텀 {mv*100:+.0f}% · 순위 {rankpos.get(t,'-')}위" if mv is not None else "월말 리밸런스"
+        sub = f"현재 {rankpos.get(t,'-')}위 · 12개월 모멘텀 {mv*100:+.0f}%" if mv is not None else "월말 리밸런스"
         positions_out.append(dict(ticker=t, entry_date=p["date"], entry=p["entry"],
             last=round(last, 2), ret_pct=round((last/p["entry"]-1)*100, 2),
             days=int(np.busday_count(p["date"], market_date)), sub=sub))
+    # 관심권 = 현재 실시간 모멘텀 순위 TOP 30 (보유중 표시 포함)
+    held = set(st["positions"])
     watch = []
-    for mv, t, px in ranked[UMD_TOP:UMD_TOP+20]:
-        watch.append(dict(ticker=t, last=round(px, 2), rank=rankpos[t], mom_pct=round(mv*100, 1)))
+    for r, (mv, t, px) in enumerate(ranked[:30]):
+        watch.append(dict(ticker=t, last=round(px, 2), rank=r+1, mom_pct=round(mv*100, 1), held=(t in held)))
     return dict(label=label, desc=desc, mode="rank", summary=summary_of(positions_out, st["closed"]),
         positions=positions_out, closed=st["closed"][:100],
-        today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:20],
+        today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:30],
         cash=(not risk_on),
         note=("📈 절대모멘텀 ON — 시장 상승추세라 상위 15종목 정상 보유" if risk_on
               else "📉 절대모멘텀 OFF — 시장 약세(SPY 12개월 −)라 현금 100% 회피 중"))
