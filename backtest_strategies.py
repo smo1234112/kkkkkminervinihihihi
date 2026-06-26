@@ -184,12 +184,13 @@ def build_sets_signal(entry, exit_, data, test_dates):
         sets.append(frozenset(held))
     return sets
 
-def build_sets_umd(data, test_dates):
+def build_sets_umd(data, test_dates, every=None):
+    # every=None → 월말 리밸런스(월 1회), every=N → N거래일마다 리밸런스(2주≈10)
     sets=[]; cur=frozenset(); last_month=None
-    for dt in test_dates:
-        m=(dt.year,dt.month)
-        if m!=last_month:
-            last_month=m
+    for k, dt in enumerate(test_dates):
+        rebal = (k % every == 0) if every else ((dt.year, dt.month) != last_month)
+        if rebal:
+            last_month=(dt.year,dt.month)
             cand=[]
             for t,d in data.items():
                 i=d["posmap"].get(dt)
@@ -197,8 +198,8 @@ def build_sets_umd(data, test_dates):
                 mv=d["mom121"][i]
                 if not np.isnan(mv): cand.append((mv,t))
             cand.sort(reverse=True)
-            k=max(1,int(len(cand)*0.10))
-            cur=frozenset(t for _,t in cand[:k])
+            n=max(1,int(len(cand)*0.10))
+            cur=frozenset(t for _,t in cand[:n])
         sets.append(cur)
     return sets
 
@@ -413,7 +414,11 @@ def main():
     # UMD
     sets=build_sets_umd(data,test_dates); keep["UMD(횡단모멘텀)"]=sets; curve,rets,trades=simulate(sets,data,test_dates)
     m=metrics(curve,rets,trades); m["name"]="UMD(횡단모멘텀)"; rows.append(m); curves[m["name"]]=curve
-    print(f"[UMD] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']} 승률 {m['win']:.0f}%")
+    print(f"[UMD 월간] CAGR {m['cagr']:+.1f}% MDD {m['mdd']:.1f}% Sharpe {m['sharpe']:.2f} 거래 {m['nt']}")
+    # UMD 2주(10거래일) 리밸런스
+    s2=build_sets_umd(data,test_dates,every=10); c2,r2,t2=simulate(s2,data,test_dates)
+    m2=metrics(c2,r2,t2); m2["name"]="UMD(2주)"; rows.append(m2); curves["UMD(2주)"]=c2
+    print(f"[UMD 2주] CAGR {m2['cagr']:+.1f}% MDD {m2['mdd']:.1f}% Sharpe {m2['sharpe']:.2f} 거래 {m2['nt']}")
     # 벤치마크
     for bn in ["SPY","QQQ"]:
         if bn in frames:
@@ -474,7 +479,7 @@ def main():
     md.append("| 전략 | " + " | ".join(ylabels) + " |")
     md.append("|---|" + "---|"*len(years))
     md.append("| **장세(SPY)** | " + " | ".join(f"{regime[i]} {spy_y[i]:+.0f}%" for i in range(len(years))) + " |")
-    order=["블렌드 40/35/25","Stage+UMD 50/50","Stage(-8%)+UMD 50/50","UMD(횡단모멘텀)","Minervini","Stage(Weinstein)","Stage(-8%손절)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
+    order=["블렌드 40/35/25","Stage+UMD 50/50","Stage(-8%)+UMD 50/50","UMD(횡단모멘텀)","UMD(2주)","Minervini","Stage(Weinstein)","Stage(-8%손절)","QQQ 보유","SPY 보유","Donchian(55일)","Turtle(20일)","Darvas","Qullamaggie","ConnorsRSI(2)","IBS반전"]
     seen=set()
     for nm in order + [r["name"] for r in rows]:
         if nm in seen or nm not in curves: continue
@@ -492,7 +497,7 @@ def main():
 
     # ── 월별 수익률 ──
     md += ["## 월별 수익률 (%)",""]
-    for nm in ["블렌드 40/35/25","Stage+UMD 50/50","Stage(-8%)+UMD 50/50","UMD(횡단모멘텀)","Stage(Weinstein)"]:
+    for nm in ["UMD(횡단모멘텀)","UMD(2주)","블렌드 40/35/25","Stage+UMD 50/50"]:
         if nm in curves: md += [monthly_md(nm, curves[nm], test_dates), ""]
 
     # ── 매매내역 + CSV ──
