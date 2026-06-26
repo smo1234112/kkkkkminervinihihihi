@@ -139,6 +139,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
   justify-content:center;font-size:12px;font-weight:800;color:var(--grey700);margin-right:13px;flex:none;letter-spacing:-.5px}
 .avatar.up{background:var(--red50);color:var(--red500)}
 .avatar.down{background:var(--blue50);color:var(--blue600)}
+.avatar.rank{font-size:18px;font-weight:800;letter-spacing:-.5px}
 .mid{flex:1;min-width:0}
 .mid .t{font-size:16px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:6px}
 .mid .ko{font-size:11.5px;color:var(--grey600);font-weight:600;margin-top:3px;letter-spacing:-.2px}
@@ -801,12 +802,17 @@ function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t
 /* 보유: 매수날짜 · 매수가 · 손절가 / 현재가 · 수익률 (시간 표기 없음) */
 function rowHold(p){
   const todayBuy = p.entry_date===DATA.market_date;
+  const hasRank = p.rank!=null;
+  const left = hasRank
+    ? `<div class="avatar rank ${p.ret_pct<0?'down':'up'}">${p.rank}</div>`
+    : `<div class="avatar ${p.ret_pct<0?'down':'up'}">${p.ticker.slice(0,4)}</div>`;
+  const subTxt = hasRank ? (p.sub||"").replace(/^현재 \S+위 ·\s*/, "") : (p.sub||"");
   return `<div class="card${p.drop?' drop':''}"><div class="lrow">
-    <div class="avatar ${p.ret_pct<0?'down':'up'}">${p.ticker.slice(0,4)}</div>
+    ${left}
     <div class="mid">
       <div class="t">${p.ticker}${todayBuy?'<span class="chip buy">오늘 매수</span>':''}${p.drop?'<span class="chip out">이탈 예정</span>':''}</div>
       ${koLine(p.ticker)}
-      <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>${p.sub||''}</b></div>
+      <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>${subTxt}</b></div>
     </div>
     <div class="right">
       <div class="p">$${fmt(p.last)}</div>
