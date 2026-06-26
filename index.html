@@ -147,6 +147,8 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .chip{font-size:10.5px;font-weight:800;border-radius:7px;padding:3px 7px;letter-spacing:-.2px}
 .chip.buy{background:var(--blue500);color:#fff}
 .chip.sell{background:var(--grey200);color:var(--grey700)}
+.chip.out{background:var(--blue100);color:var(--blue600)}
+.card.drop{background:var(--blue50);border:1px solid var(--blue100)}
 
 /* ───── 관심권 카드 ───── */
 .watch-head{padding:6px 22px 12px;font-size:13px;color:var(--grey600);font-weight:600;line-height:1.5}
@@ -794,10 +796,10 @@ function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t
 /* 보유: 매수날짜 · 매수가 · 손절가 / 현재가 · 수익률 (시간 표기 없음) */
 function rowHold(p){
   const todayBuy = p.entry_date===DATA.market_date;
-  return `<div class="card"><div class="lrow">
+  return `<div class="card${p.drop?' drop':''}"><div class="lrow">
     <div class="avatar ${p.ret_pct<0?'down':'up'}">${p.ticker.slice(0,4)}</div>
     <div class="mid">
-      <div class="t">${p.ticker}${todayBuy?'<span class="chip buy">오늘 매수</span>':''}</div>
+      <div class="t">${p.ticker}${todayBuy?'<span class="chip buy">오늘 매수</span>':''}${p.drop?'<span class="chip out">이탈 예정</span>':''}</div>
       ${koLine(p.ticker)}
       <div class="s">${p.entry_date}<span class="dot">·</span>매수 $${fmt(p.entry)}<span class="dot">·</span><b>${p.sub||''}</b></div>
     </div>

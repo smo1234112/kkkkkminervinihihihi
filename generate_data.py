@@ -248,11 +248,12 @@ def out_umd(label, desc, st, data, last_dt, market_date, risk_on=True):
     for t, p in sorted(st["positions"].items(), key=lambda x: rankpos.get(x[0], 9999)):  # 현재 순위순 정렬
         d = data.get(t); i = d["pos_map"].get(last_dt) if d else None
         last = float(d["c"][i]) if i is not None else p["entry"]
-        mv = momof.get(t)
-        sub = f"현재 {rankpos.get(t,'-')}위 · 12개월 모멘텀 {mv*100:+.0f}%" if mv is not None else "월말 리밸런스"
+        mv = momof.get(t); rk = rankpos.get(t)
+        sub = f"현재 {rk if rk else '-'}위 · 12개월 모멘텀 {mv*100:+.0f}%" if mv is not None else "월말 리밸런스"
         positions_out.append(dict(ticker=t, entry_date=p["date"], entry=p["entry"],
             last=round(last, 2), ret_pct=round((last/p["entry"]-1)*100, 2),
-            days=int(np.busday_count(p["date"], market_date)), sub=sub))
+            days=int(np.busday_count(p["date"], market_date)), sub=sub,
+            rank=rk, drop=(rk is None or rk > UMD_TOP)))   # 다음 리밸런스에 빠질 종목(15위 밖)
     # 관심권 = 현재 실시간 모멘텀 순위 TOP 30 (보유중 표시 포함)
     held = set(st["positions"])
     watch = []
