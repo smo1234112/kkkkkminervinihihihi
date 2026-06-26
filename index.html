@@ -127,9 +127,11 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto 
 .seg button.on .cnt{color:var(--blue500)}
 
 /* ───── 정렬바 ───── */
-.sortbar{display:flex;align-items:center;gap:6px;margin:2px 18px 8px;font-size:12px;color:var(--grey500);font-weight:700}
-.sortbar button{border:0;background:var(--grey100);color:var(--grey600);font-size:12px;font-weight:800;border-radius:8px;padding:5px 11px;cursor:pointer;transition:all .15s}
-.sortbar button.on{background:var(--grey900);color:#fff}
+.sortbar{display:flex;align-items:center;gap:9px;margin:2px 18px 10px}
+.sortlbl{font-size:12px;color:var(--grey400);font-weight:700}
+.sortseg{display:inline-flex;background:var(--grey100);border-radius:11px;padding:3px;gap:2px}
+.sortseg button{border:0;background:transparent;color:var(--grey500);font-size:12.5px;font-weight:800;border-radius:9px;padding:6px 13px;cursor:pointer;transition:all .15s;letter-spacing:-.3px}
+.sortseg button.on{background:#fff;color:var(--grey900);box-shadow:0 1px 4px rgba(2,32,71,.12)}
 
 /* ───── 리스트 카드 ───── */
 .list{padding:2px 16px}
@@ -899,7 +901,7 @@ function render(){
     if(holdSort==="ret") ps.sort((a,b)=>b.ret_pct-a.ret_pct);
     else ps.sort((a,b)=>((a.rank||9999)-(b.rank||9999)) || (b.ret_pct-a.ret_pct));
     const rankBtn = S.mode==="rank" ? `<button class="${holdSort==='rank'?'on':''}" onclick="setHoldSort('rank')">모멘텀 순위</button>` : "";
-    const sortbar = ps.length>1 ? `<div class="sortbar"><span>정렬</span>${rankBtn}<button class="${holdSort==='ret'?'on':''}" onclick="setHoldSort('ret')">수익률</button></div>` : "";
+    const sortbar = ps.length>1 ? `<div class="sortbar"><span class="sortlbl">정렬</span><div class="sortseg">${rankBtn}<button class="${holdSort==='ret'?'on':''}" onclick="setHoldSort('ret')">수익률</button></div></div>` : "";
     body = ps.length ? `${sortbar}<div class="list">${ps.map(rowHold).join("")}</div>`
                      : `<div class="empty"><span class="em">📭</span>보유 중인 종목이 없습니다</div>`;
   }
