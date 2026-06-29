@@ -168,14 +168,20 @@ def st_exit(d, i, p):
     return None
 
 def umd_ranked(data, last_dt):
-    # 비현실적 모멘텀(>400%)은 분할/스핀오프/신규상장 가격 아티팩트 → 제외
+    # 모멘텀 아티팩트 제외: (1)비현실적 모멘텀(>400%) (2)최근 252일 중 하루 +50% 이상 점프
+    #  → 분할/스핀오프/신규상장/M&A·합병 이벤트 가격 왜곡 걸러냄 (정상주는 하루 최대 ~25%)
     ranked = []
     for t, d in data.items():
         i = d["pos_map"].get(last_dt)
         if i is None or i < 261: continue
         mv = d["mom121"][i]
-        if not np.isnan(mv) and -0.95 < mv <= 4.0:
-            ranked.append((mv, t, float(d["c"][i])))
+        if np.isnan(mv) or not (-0.95 < mv <= 4.0): continue
+        c = d["c"]; spike = False
+        for j in range(max(1, i-251), i+1):
+            if c[j-1] > 0 and c[j]/c[j-1] - 1 > 0.50:
+                spike = True; break
+        if spike: continue   # 이벤트성 폭등(M&A/분할 등) 종목 제외
+        ranked.append((mv, t, float(d["c"][i])))
     ranked.sort(reverse=True)
     return ranked
 
