@@ -9,7 +9,7 @@
 - 첫 실행: 지난 10거래일 소급(breakout) / 모멘텀 즉시 1회 구성
 - 이후: 마지막 처리일 이후만 시간순 전진(매도일<매수일 오류 방지)
 """
-import json, os, sys, time, warnings
+import json, os, re, sys, time, warnings
 from datetime import datetime
 import numpy as np
 import pandas as pd
@@ -23,6 +23,7 @@ except ImportError:
 BASE = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(BASE, "state.json")
 DATA_FILE  = os.path.join(BASE, "data.json")
+NAMES_FILE = os.path.join(BASE, "names.json")
 
 MAX_POS, STOP_PCT, PIVOT_LEN, VOL_MULT = 10, 8.0, 50, 1.5
 UMD_TOP = 15
@@ -289,6 +290,39 @@ def load_state():
     raw["umd"].setdefault("positions", {}); raw["umd"].setdefault("closed", []); raw["umd"].setdefault("last_rebalance", None)
     return raw
 
+# ── 종목 한글명/산업 자동 해결 (yfinance, 신규 종목 자동 반영) ──────────
+SECTOR_KO = {"Technology":"기술","Healthcare":"헬스케어","Financial Services":"금융","Consumer Cyclical":"경기소비재","Consumer Defensive":"필수소비재","Industrials":"산업재","Energy":"에너지","Communication Services":"커뮤니케이션","Basic Materials":"소재","Real Estate":"부동산","Utilities":"유틸리티"}
+INDUSTRY_KO = {"Semiconductors":"반도체","Semiconductor Equipment & Materials":"반도체장비","Software - Infrastructure":"인프라SW","Software - Application":"응용SW","Information Technology Services":"IT서비스","Computer Hardware":"컴퓨터HW","Consumer Electronics":"전자기기","Communication Equipment":"통신장비","Electronic Components":"전자부품","Scientific & Technical Instruments":"계측장비","Solar":"태양광","Electrical Equipment & Parts":"전기장비","Aerospace & Defense":"항공우주/방산","Specialty Industrial Machinery":"산업기계","Building Products & Equipment":"건축자재","Engineering & Construction":"엔지니어링/건설","Farm & Heavy Construction Machinery":"중장비","Integrated Freight & Logistics":"물류","Airlines":"항공","Internet Content & Information":"인터넷","Internet Retail":"인터넷쇼핑","Advertising Agencies":"광고","Entertainment":"엔터","Telecom Services":"통신서비스","Electronic Gaming & Multimedia":"게임","Biotechnology":"바이오","Drug Manufacturers - General":"제약","Drug Manufacturers - Specialty & Generic":"제약","Medical Devices":"의료기기","Diagnostics & Research":"진단/연구","Health Information Services":"헬스케어IT","Medical Instruments & Supplies":"의료기기","Banks - Regional":"은행","Banks - Diversified":"은행","Capital Markets":"자본시장","Credit Services":"여신","Asset Management":"자산운용","Insurance - Diversified":"보험","Oil & Gas E&P":"석유·가스","Oil & Gas Equipment & Services":"석유장비","Oil & Gas Midstream":"에너지수송","Uranium":"우라늄","Utilities - Independent Power Producers":"발전","Utilities - Regulated Electric":"전력","Gold":"금","Copper":"구리","Steel":"철강","Other Industrial Metals & Mining":"광물","Specialty Chemicals":"특수화학","Auto Manufacturers":"자동차","Auto Parts":"자동차부품","Restaurants":"외식","Specialty Retail":"소매","Travel Services":"여행"}
+_SUFFIX = re.compile(r"(,?\s+(Inc\.?|Incorporated|Corporation|Corp\.?|Company|Co\.?|Ltd\.?|Limited|plc|PLC|N\.V\.|S\.A\.|AG|SE|Holdings|Group))+$", re.I)
+
+def _clean_name(nm):
+    nm = (nm or "").strip()
+    for _ in range(3):
+        nm = _SUFFIX.sub("", nm).strip().rstrip(",")
+    return nm
+
+def load_names():
+    if os.path.exists(NAMES_FILE):
+        try: return json.load(open(NAMES_FILE, encoding="utf-8"))
+        except Exception: pass
+    return {}
+
+def resolve_names(tickers, cache, limit=40):
+    # 캐시에 없는 티커만 yfinance 조회(하루 최대 limit개). 실패는 건너뜀→다음날 재시도.
+    fetched = 0
+    for t in tickers:
+        if t in cache or fetched >= limit: continue
+        try:
+            info = yf.Ticker(t).info
+            raw = info.get("longName") or info.get("shortName") or t
+            cat = INDUSTRY_KO.get(info.get("industry")) or SECTOR_KO.get(info.get("sector")) or (info.get("sector") or "-")
+            cache[t] = f"{_clean_name(raw)} / {cat}"
+            fetched += 1
+        except Exception:
+            pass
+    return fetched
+
+
 def main():
     state = load_state()
     uni = get_universe()
@@ -336,8 +370,19 @@ def main():
         "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 15종목(최근 1개월 −15%↓ 급락주 제외) + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
                        state["umd"], data, last_dt, market_date, risk_on),
     }
+    # 종목 한글명/산업: 캐시(없으면 yfinance 자동조회) → data.json에 실어보냄(신규 종목 자동 반영)
+    names_cache = load_names()
+    ref = set()
+    for _b in blocks.values():
+        for _p in _b.get("positions", []): ref.add(_p["ticker"])
+        for _w in _b.get("watch", []): ref.add(_w["ticker"])
+        for _c in _b.get("closed", []): ref.add(_c["ticker"])
+    _nnew = resolve_names(sorted(ref), names_cache)
+    if _nnew: json.dump(names_cache, open(NAMES_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    out_names = {t: names_cache[t] for t in ref if t in names_cache}
+    print(f"이름 사전: 참조 {len(ref)} · 신규 {_nnew} · 총 {len(names_cache)}")
     out = dict(updated=datetime.now().strftime("%Y-%m-%d %H:%M"), market_date=market_date,
-               start_date="6월 11일", order=["minervini", "stage", "umd"], strategies=blocks)
+               start_date="6월 11일", order=["minervini", "stage", "umd"], strategies=blocks, names=out_names)
     json.dump(out, open(DATA_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     json.dump(state, open(STATE_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     for k in out["order"]:

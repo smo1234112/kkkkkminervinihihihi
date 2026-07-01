@@ -37,7 +37,7 @@ jobs:
           git config user.name "smo1234112"
           git config user.email "5semmm@naver.com"
           git remote set-url origin https://x-access-token:${{ secrets.PAT || github.token }}@github.com/${{ github.repository }}
-          git add data.json state.json
+          git add data.json state.json names.json
           if git diff --cached --quiet; then
             echo "변경 없음 (휴장일 등)"
           else

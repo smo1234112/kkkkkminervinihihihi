@@ -797,7 +797,8 @@ const NAMES = {
 "ZBRA":"지브라 테크놀로지스 / 산업IT장비",
 "ZTS":"조에티스 / 동물약품"
 };
-function koLine(t, cl){ const n = NAMES[t]; return n ? `<div class="${cl||'ko'}">${n}</div>` : ""; }
+const nmeta=t=>(DATA&&DATA.names&&DATA.names[t])||NAMES[t]||"";
+function koLine(t, cl){ const n = nmeta(t); return n ? `<div class="${cl||'ko'}">${n}</div>` : ""; }
 
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2000);}
@@ -972,7 +973,7 @@ function recalcBuy(){
   const fx=calcFx||1350, krw=u=>Math.round(u*fx/1000)*1000;
   const row=(o,withTags)=>{
     const shn=o.last>0?o.usd/o.last:0, sh = shn>=1?shn.toFixed(2):shn.toFixed(3);
-    const ko=(NAMES[o.ticker]||"").split(" / ")[0];
+    const ko=(nmeta(o.ticker)||"").split(" / ")[0];
     const tags = withTags ? `<span class="ctags">${o.keys.map(k=>`<span class="schip" style="color:${sleeves[k].color};background:${sleeves[k].color}1a">${sleeves[k].label}</span>`).join("")}</span>` : "";
     return `<div class="crow"><div class="cl"><b>${o.ticker}</b>${ko?`<span class="cko">${ko}</span>`:""}${tags}</div>
       <div class="cr"><div class="camt">₩${won(krw(o.usd))}</div><div class="csh">$${won(o.usd)} · ≈${sh}주 · $${fmt(o.last)}</div></div></div>`;
