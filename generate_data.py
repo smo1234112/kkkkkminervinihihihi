@@ -28,6 +28,7 @@ NAMES_FILE = os.path.join(BASE, "names.json")
 MAX_POS, STOP_PCT, PIVOT_LEN, VOL_MULT = 10, 8.0, 50, 1.5
 UMD_TOP = 15
 UMD_DROP_1M = 0.15   # 최근 1개월(21거래일) -15% 이하 급락주는 매수 후보 제외(백테스트 B -15% 리필)
+UMD_MOM_CAP = 5.0    # 모멘텀 +500% 초과 과열주 제외 (INTC 사건 후 400→500 상향, 2026-07: 점진적 랠리는 품고 초극단만 배제)
 BACKFILL_DAYS = 10
 
 FALLBACK = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","AVGO","LLY","JPM","V","UNH","XOM","MA","COST","HD","PG","NFLX","JNJ","ABBV","WMT","CRM","BAC","ORCL","MRK","KO","CVX","AMD","PEP","TMO","ADBE","LIN","WFC","CSCO","ACN","MCD","ABT","PM","IBM","GE","TXN","QCOM","INTU","DHR","AXP","CAT","VZ","AMGN","NOW","ISRG","NEE","PFE","SPGI","UBER","CMCSA","RTX","LOW","T","GS","AMAT","HON","UNP","BKNG","ELV","SYK","TJX","BLK","COP","VRTX","LRCX","MU","PANW","ANET","KLAC","ADI","SBUX","MDT","BA","PLD","GILD","REGN","MMC","ADP","DE","BX","CB","ETN","SO","MDLZ","SNPS","CDNS","AMT","ICE","LMT","SHW","DUK","CI","MO","FI","MCK","CL","WM","TT","TDG","ITW","EOG","CEG","CRWD","MAR","PLTR","SMCI","ARM","COIN","TSM","SHOP","SNOW","NET","DDOG"]
@@ -170,14 +171,14 @@ def st_exit(d, i, p):
     return None
 
 def umd_ranked(data, last_dt):
-    # 모멘텀 아티팩트 제외: (1)비현실적 모멘텀(>400%) (2)최근 252일 중 하루 +50% 이상 점프
+    # 후보 제외 게이트: (1)모멘텀 +500% 초과 과열주(UMD_MOM_CAP) (2)최근 252일 중 하루 +50% 이상 점프(아티팩트)
     #  → 분할/스핀오프/신규상장/M&A·합병 이벤트 가격 왜곡 걸러냄 (정상주는 하루 최대 ~25%)
     ranked = []
     for t, d in data.items():
         i = d["pos_map"].get(last_dt)
         if i is None or i < 261: continue
         mv = d["mom121"][i]
-        if np.isnan(mv) or not (-0.95 < mv <= 4.0): continue
+        if np.isnan(mv) or not (-0.95 < mv <= UMD_MOM_CAP): continue
         c = d["c"]; spike = False
         for j in range(max(1, i-251), i+1):
             if c[j-1] > 0 and c[j]/c[j-1] - 1 > 0.50:
@@ -367,7 +368,7 @@ def main():
         "stage": out_breakout("Stage", "150일선 위·상승(Stage 2) + 50일 신고가 돌파 / 150일선 이탈 청산",
                               state["stage"], data, last_dt, market_date, st_sub,
                               lambda d, i: stage_up(d, i) and not stage_entry(d, i)),
-        "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 15종목(최근 1개월 −15%↓ 급락주 제외) + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
+        "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 15종목(+500% 초과 과열주·최근 1개월 −15%↓ 급락주 제외) + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
                        state["umd"], data, last_dt, market_date, risk_on),
     }
     # 종목 한글명/산업: 캐시(없으면 yfinance 자동조회) → data.json에 실어보냄(신규 종목 자동 반영)
