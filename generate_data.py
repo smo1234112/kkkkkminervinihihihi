@@ -46,12 +46,18 @@ def get_universe():
         t |= set(_read_html_ua("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0]["Symbol"].astype(str).str.replace(".", "-", regex=False))
     except Exception as e:
         print("[경고] S&P500 수집 실패:", e)
-    try:
-        for tb in _read_html_ua("https://en.wikipedia.org/wiki/Nasdaq-100"):
-            col = "Ticker" if "Ticker" in tb.columns else ("Symbol" if "Symbol" in tb.columns else None)
-            if col: t |= set(tb[col].astype(str)); break
-    except Exception as e:
-        print("[경고] 나스닥100 수집 실패:", e)
+    # 나스닥100 구성종목 표가 별도 페이지로 분리됨(2026-07 위키 개편) → 두 URL 순차 시도
+    got_ndx = False
+    for url in ("https://en.wikipedia.org/wiki/Nasdaq-100", "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"):
+        try:
+            for tb in _read_html_ua(url):
+                col = "Ticker" if "Ticker" in tb.columns else ("Symbol" if "Symbol" in tb.columns else None)
+                if col and len(tb) >= 80:   # 구성종목 표(100±)만, 잡표 방지
+                    t |= set(tb[col].astype(str)); got_ndx = True; break
+            if got_ndx: break
+        except Exception as e:
+            print(f"[경고] 나스닥100({url}) 수집 실패:", e)
+    if not got_ndx: print("[경고] 나스닥100 구성종목 표를 못 찾음 → S&P500만 사용")
     t = {x for x in t if isinstance(x, str) and x.isascii() and 0 < len(x) <= 6}
     if not t:
         print(f"[안내] 내장 리스트 {len(FALLBACK)}종목으로 진행"); t = set(FALLBACK)
