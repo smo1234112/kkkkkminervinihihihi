@@ -5,7 +5,7 @@
 - 3개 전략을 각각 독립 장부로 계산:
     minervini : 8조건 + 50일 신고가 돌파 + 거래량 1.5배 / -8% or 50일선 이탈 (최대 10종목)
     stage     : 150일선(≈30주) 위·상승 + 50일 신고가 돌파 + 거래량 1.5배 / 150일선 이탈 (최대 10종목)
-    umd       : 매월 12-1개월 모멘텀 상위 15종목 보유, 월말 리밸런스(모멘텀 이탈 시 교체)
+    umd       : 매월 12-1개월 모멘텀 상위 10종목 보유, 월말 리밸런스(모멘텀 이탈 시 교체)
 - 첫 실행: 지난 10거래일 소급(breakout) / 모멘텀 즉시 1회 구성
 - 이후: 마지막 처리일 이후만 시간순 전진(매도일<매수일 오류 방지)
 """
@@ -26,7 +26,7 @@ DATA_FILE  = os.path.join(BASE, "data.json")
 NAMES_FILE = os.path.join(BASE, "names.json")
 
 MAX_POS, STOP_PCT, PIVOT_LEN, VOL_MULT = 10, 8.0, 50, 1.5
-UMD_TOP = 15
+UMD_TOP = 10         # 2026-07-13 15→10 집중: 백테스트 전 구간 CAGR·Sharpe 동시 개선(단, 종목당 10%라 개별종목 리스크는 커짐)
 UMD_DROP_1M = 0.15   # 최근 1개월(21거래일) -15% 이하 급락주는 매수 후보 제외(백테스트 B -15% 리필)
 UMD_MOM_CAP = 5.0    # 모멘텀 +500% 초과 과열주 제외 (INTC 사건 후 400→500 상향, 2026-07: 점진적 랠리는 품고 초극단만 배제)
 BACKFILL_DAYS = 10
@@ -269,7 +269,7 @@ def out_umd(label, desc, st, data, last_dt, market_date, risk_on=True):
         positions_out.append(dict(ticker=t, entry_date=p["date"], entry=p["entry"],
             last=round(last, 2), ret_pct=round((last/p["entry"]-1)*100, 2),
             days=int(np.busday_count(p["date"], market_date)), sub=sub,
-            rank=rk, drop=(rk is None or rk > UMD_TOP)))   # 다음 리밸런스에 빠질 종목(15위 밖)
+            rank=rk, drop=(rk is None or rk > UMD_TOP)))   # 다음 리밸런스에 빠질 종목(10위 밖)
     # 관심권 = 현재 실시간 모멘텀 순위 TOP 30 (보유중 표시 포함)
     held = set(st["positions"])
     watch = []
@@ -279,7 +279,7 @@ def out_umd(label, desc, st, data, last_dt, market_date, risk_on=True):
         positions=positions_out, closed=st["closed"][:100],
         today_buys=[p["ticker"] for p in positions_out if p["entry_date"] == market_date], watch=watch[:30],
         cash=(not risk_on),
-        note=("📈 절대모멘텀 ON — 시장 상승추세라 상위 15종목 정상 보유" if risk_on
+        note=("📈 절대모멘텀 ON — 시장 상승추세라 상위 10종목 정상 보유" if risk_on
               else "📉 절대모멘텀 OFF — 시장 약세(SPY 12개월 −)라 현금 100% 회피 중"))
 
 def load_state():
@@ -374,7 +374,7 @@ def main():
         "stage": out_breakout("Stage", "150일선 위·상승(Stage 2) + 50일 신고가 돌파 / 150일선 이탈 청산",
                               state["stage"], data, last_dt, market_date, st_sub,
                               lambda d, i: stage_up(d, i) and not stage_entry(d, i)),
-        "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 15종목(+500% 초과 과열주·최근 1개월 −15%↓ 급락주 제외) + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
+        "umd": out_umd("UMD 듀얼모멘텀", "12-1개월 모멘텀 상위 10종목(+500% 초과 과열주·최근 1개월 −15%↓ 급락주 제외) + 절대모멘텀(SPY 12개월 +면 보유, −면 현금) · 월말 리밸런스",
                        state["umd"], data, last_dt, market_date, risk_on),
     }
     # 종목 한글명/산업: 캐시(없으면 yfinance 자동조회) → data.json에 실어보냄(신규 종목 자동 반영)

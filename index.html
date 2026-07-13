@@ -843,7 +843,7 @@ function cardWatch(w){
   if(typeof w === "string") return `<div class="wcard"><div class="wtop"><span class="tk">${w}</span></div></div>`;
   if(w.rank!==undefined){   // UMD 실시간 모멘텀 순위
     const tag = w.held ? '<span class="gap broke">⭐ 보유중</span>'
-              : (w.rank<=15 ? '<span class="gap">편입 예정</span>' : '<span class="gap" style="color:var(--grey500);background:var(--grey100)">대기</span>');
+              : (w.rank<=10 ? '<span class="gap">편입 예정</span>' : '<span class="gap" style="color:var(--grey500);background:var(--grey100)">대기</span>');
     return `<div class="wcard">
       <div class="wtop"><span class="tk"><span class="rnum">${w.rank}</span> ${w.ticker}</span>${tag}</div>
       ${koLine(w.ticker,'wko')}
@@ -992,14 +992,14 @@ function recalcBuy(){
     html+=`</div>`;
   }
   html+=`<div class="ctot">총 ₩${won(krw(total))} <span class="cmut">($${won(total)} · 환율 ${fx})</span></div>
-    <div class="cfoot">· 금액(₩ 또는 $)을 토스 해외주식 "금액으로 매수"에 그대로 넣으면 돼요(소수점 매수). 정수만 사려면 주식수 내림.<br>· UMD 듀얼모멘텀 보유 15종목에 <b>균등 배분</b>. 약세장(절대모멘텀 OFF)이면 현금 100%라 매수 종목이 없어요.</div>`;
+    <div class="cfoot">· 금액(₩ 또는 $)을 토스 해외주식 "금액으로 매수"에 그대로 넣으면 돼요(소수점 매수). 정수만 사려면 주식수 내림.<br>· UMD 듀얼모멘텀 보유 10종목에 <b>균등 배분</b>. 약세장(절대모멘텀 OFF)이면 현금 100%라 매수 종목이 없어요.</div>`;
   el.innerHTML=html;
 }
 function renderCalc(strat, root){
   const curBtns=["$","₩"].map(c=>`<button class="${calcCur===c?'on':''}" onclick="setCalcCur('${c}')">${c}</button>`).join("");
   document.getElementById("content").innerHTML = `${strat}
     <div class="calc">
-      <div class="clabel">💰 가진 금액을 넣으면 <b>UMD 15종목</b>에 균등 배분해서 종목마다 얼마씩 살지 계산해줘요</div>
+      <div class="clabel">💰 가진 금액을 넣으면 <b>UMD 10종목</b>에 균등 배분해서 종목마다 얼마씩 살지 계산해줘요</div>
       <div class="cinput">
         <div class="ccur">${curBtns}</div>
         <input id="calcAmt" type="text" inputmode="numeric" value="${calcAmt?calcAmt.toLocaleString('en-US'):''}" oninput="onCalcInput(this.value)" placeholder="투자금액">
