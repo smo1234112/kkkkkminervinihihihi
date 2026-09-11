@@ -1,6 +1,6 @@
 {
- "updated": "2026-09-10 23:21",
- "market_date": "2026-09-10",
+ "updated": "2026-09-11 23:29",
+ "market_date": "2026-09-11",
  "start_date": "6월 11일",
  "order": [
   "minervini",
@@ -14,7 +14,7 @@
    "mode": "breakout",
    "summary": {
     "open_count": 10,
-    "avg_ret": 2.06,
+    "avg_ret": 4.46,
     "closed_count": 22,
     "win_rate": 4.5,
     "realized": -158.6
@@ -24,90 +24,90 @@
      "ticker": "SWKS",
      "entry_date": "2026-09-10",
      "entry": 84.03,
-     "last": 84.03,
-     "ret_pct": -0.0,
-     "days": 0,
+     "last": 88.35,
+     "ret_pct": 5.14,
+     "days": 1,
      "sub": "손절 $77.31"
     },
     {
      "ticker": "DELL",
      "entry_date": "2026-09-03",
      "entry": 516.39,
-     "last": 506.62,
-     "ret_pct": -1.89,
-     "days": 5,
+     "last": 567.29,
+     "ret_pct": 9.86,
+     "days": 6,
      "sub": "손절 $475.08"
     },
     {
      "ticker": "PFG",
      "entry_date": "2026-09-03",
      "entry": 118.51,
-     "last": 114.96,
-     "ret_pct": -3.0,
-     "days": 5,
+     "last": 116.17,
+     "ret_pct": -1.98,
+     "days": 6,
      "sub": "손절 $109.03"
     },
     {
      "ticker": "CF",
      "entry_date": "2026-09-01",
      "entry": 135.6,
-     "last": 135.11,
-     "ret_pct": -0.36,
-     "days": 7,
+     "last": 133.07,
+     "ret_pct": -1.87,
+     "days": 8,
      "sub": "손절 $124.75"
     },
     {
      "ticker": "DE",
      "entry_date": "2026-08-21",
      "entry": 647.47,
-     "last": 677.94,
-     "ret_pct": 4.71,
-     "days": 14,
+     "last": 675.74,
+     "ret_pct": 4.37,
+     "days": 15,
      "sub": "손절 $595.67"
     },
     {
      "ticker": "CRL",
      "entry_date": "2026-08-05",
      "entry": 260.72,
-     "last": 273.0,
-     "ret_pct": 4.71,
-     "days": 26,
+     "last": 278.26,
+     "ret_pct": 6.73,
+     "days": 27,
      "sub": "손절 $239.86"
     },
     {
      "ticker": "ANET",
      "entry_date": "2026-08-04",
      "entry": 190.51,
-     "last": 188.99,
-     "ret_pct": -0.8,
-     "days": 27,
+     "last": 199.59,
+     "ret_pct": 4.77,
+     "days": 28,
      "sub": "손절 $175.27"
     },
     {
      "ticker": "DXCM",
      "entry_date": "2026-07-31",
      "entry": 83.45,
-     "last": 84.51,
-     "ret_pct": 1.27,
-     "days": 29,
+     "last": 83.03,
+     "ret_pct": -0.5,
+     "days": 30,
      "sub": "손절 $76.77"
     },
     {
      "ticker": "BNY",
      "entry_date": "2026-07-15",
      "entry": 162.35,
-     "last": 162.59,
-     "ret_pct": 0.15,
-     "days": 41,
+     "last": 162.66,
+     "ret_pct": 0.19,
+     "days": 42,
      "sub": "손절 $149.36"
     },
     {
      "ticker": "EXPD",
      "entry_date": "2026-06-08",
      "entry": 163.44,
-     "last": 189.32,
-     "ret_pct": 15.83,
-     "days": 68,
+     "last": 192.6,
+     "ret_pct": 17.84,
+     "days": 69,
      "sub": "손절 $150.36"
     }
    ],
@@ -267,289 +267,287 @@
      "reason": "손절 -8%"
     }
    ],
-   "today_buys": [
-    "SWKS"
-   ],
+   "today_buys": [],
    "watch": [
     {
-     "ticker": "HPQ",
-     "last": 32.73,
-     "pivot": 32.93,
-     "gap_pct": 0.61,
-     "vol_ratio": 1.0
+     "ticker": "BBY",
+     "last": 90.8,
+     "pivot": 91.27,
+     "gap_pct": 0.52,
+     "vol_ratio": 0.8
     },
     {
-     "ticker": "COP",
-     "last": 137.04,
-     "pivot": 137.87,
-     "gap_pct": 0.61,
-     "vol_ratio": 0.9
+     "ticker": "VZ",
+     "last": 50.61,
+     "pivot": 50.93,
+     "gap_pct": 0.63,
+     "vol_ratio": 0.7
     },
     {
      "ticker": "VLO",
-     "last": 385.43,
-     "pivot": 389.18,
-     "gap_pct": 0.97,
+     "last": 390.42,
+     "pivot": 393.54,
+     "gap_pct": 0.8,
      "vol_ratio": 1.2
     },
     {
-     "ticker": "ADM",
-     "last": 86.91,
-     "pivot": 87.9,
-     "gap_pct": 1.14,
-     "vol_ratio": 1.0
-    },
-    {
-     "ticker": "CVX",
-     "last": 212.76,
-     "pivot": 215.28,
-     "gap_pct": 1.18,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "APA",
-     "last": 44.53,
-     "pivot": 45.13,
-     "gap_pct": 1.35,
-     "vol_ratio": 1.2
+     "ticker": "COP",
+     "last": 137.35,
+     "pivot": 138.89,
+     "gap_pct": 1.12,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "OXY",
-     "last": 61.16,
-     "pivot": 62.21,
-     "gap_pct": 1.72,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "PSX",
-     "last": 258.51,
-     "pivot": 263.66,
-     "gap_pct": 1.99,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "XOM",
-     "last": 165.23,
-     "pivot": 168.64,
-     "gap_pct": 2.06,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "STT",
-     "last": 191.3,
-     "pivot": 195.93,
-     "gap_pct": 2.42,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "MPC",
-     "last": 392.42,
-     "pivot": 402.0,
-     "gap_pct": 2.44,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "BBY",
-     "last": 88.09,
-     "pivot": 91.27,
-     "gap_pct": 3.61,
-     "vol_ratio": 0.7
-    },
-    {
-     "ticker": "BAC",
-     "last": 62.56,
-     "pivot": 64.9,
-     "gap_pct": 3.74,
+     "last": 61.46,
+     "pivot": 62.24,
+     "gap_pct": 1.27,
      "vol_ratio": 0.9
     },
     {
-     "ticker": "C",
-     "last": 138.5,
-     "pivot": 143.98,
-     "gap_pct": 3.96,
-     "vol_ratio": 0.7
+     "ticker": "STT",
+     "last": 193.4,
+     "pivot": 195.93,
+     "gap_pct": 1.31,
+     "vol_ratio": 0.9
     },
     {
-     "ticker": "NTRS",
-     "last": 187.19,
-     "pivot": 194.86,
-     "gap_pct": 4.1,
+     "ticker": "CVX",
+     "last": 214.06,
+     "pivot": 217.4,
+     "gap_pct": 1.56,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "XOM",
+     "last": 165.99,
+     "pivot": 168.64,
+     "gap_pct": 1.6,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "PSX",
+     "last": 259.47,
+     "pivot": 263.76,
+     "gap_pct": 1.65,
      "vol_ratio": 1.0
     },
     {
-     "ticker": "EOG",
-     "last": 147.46,
-     "pivot": 153.67,
-     "gap_pct": 4.21,
+     "ticker": "HPE",
+     "last": 62.09,
+     "pivot": 63.44,
+     "gap_pct": 2.17,
+     "vol_ratio": 2.0
+    },
+    {
+     "ticker": "MPC",
+     "last": 395.93,
+     "pivot": 405.13,
+     "gap_pct": 2.32,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "ADM",
+     "last": 86.72,
+     "pivot": 88.75,
+     "gap_pct": 2.34,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "NTRS",
+     "last": 189.19,
+     "pivot": 194.86,
+     "gap_pct": 3.0,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "APA",
+     "last": 44.73,
+     "pivot": 46.1,
+     "gap_pct": 3.06,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "VRSN",
+     "last": 292.71,
+     "pivot": 302.11,
+     "gap_pct": 3.21,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "OKE",
+     "last": 96.62,
+     "pivot": 99.85,
+     "gap_pct": 3.34,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "BAC",
+     "last": 62.69,
+     "pivot": 64.9,
+     "gap_pct": 3.52,
+     "vol_ratio": 0.9
+    },
+    {
+     "ticker": "AAPL",
+     "last": 332.27,
+     "pivot": 344.27,
+     "gap_pct": 3.61,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "C",
+     "last": 138.82,
+     "pivot": 143.98,
+     "gap_pct": 3.72,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "ELV",
+     "last": 418.72,
+     "pivot": 434.35,
+     "gap_pct": 3.73,
      "vol_ratio": 1.1
     },
     {
      "ticker": "MET",
-     "last": 96.78,
+     "last": 97.14,
      "pivot": 100.93,
-     "gap_pct": 4.29,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "OKE",
-     "last": 95.72,
-     "pivot": 99.85,
-     "gap_pct": 4.31,
-     "vol_ratio": 0.7
-    },
-    {
-     "ticker": "CPAY",
-     "last": 408.47,
-     "pivot": 427.46,
-     "gap_pct": 4.65,
-     "vol_ratio": 0.9
-    },
-    {
-     "ticker": "ELV",
-     "last": 416.54,
-     "pivot": 436.24,
-     "gap_pct": 4.73,
-     "vol_ratio": 1.5
+     "gap_pct": 3.9,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "BIIB",
-     "last": 215.43,
+     "last": 217.15,
      "pivot": 225.8,
-     "gap_pct": 4.81,
-     "vol_ratio": 0.9
+     "gap_pct": 3.98,
+     "vol_ratio": 1.0
     },
     {
      "ticker": "ABBV",
-     "last": 255.0,
+     "last": 257.12,
      "pivot": 267.47,
-     "gap_pct": 4.89,
+     "gap_pct": 4.03,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "EOG",
+     "last": 147.36,
+     "pivot": 153.67,
+     "gap_pct": 4.28,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "IVZ",
+     "last": 32.28,
+     "pivot": 33.66,
+     "gap_pct": 4.28,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "HSIC",
+     "last": 88.36,
+     "pivot": 92.18,
+     "gap_pct": 4.32,
+     "vol_ratio": 0.6
+    },
+    {
+     "ticker": "CNC",
+     "last": 66.42,
+     "pivot": 69.36,
+     "gap_pct": 4.43,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "HUM",
+     "last": 409.8,
+     "pivot": 428.88,
+     "gap_pct": 4.66,
+     "vol_ratio": 0.6
+    },
+    {
+     "ticker": "CPAY",
+     "last": 408.22,
+     "pivot": 427.46,
+     "gap_pct": 4.71,
      "vol_ratio": 0.8
     },
     {
      "ticker": "KO",
-     "last": 87.83,
+     "last": 88.29,
      "pivot": 92.49,
-     "gap_pct": 5.31,
-     "vol_ratio": 0.7
+     "gap_pct": 4.76,
+     "vol_ratio": 0.6
     },
     {
-     "ticker": "GILD",
-     "last": 144.81,
-     "pivot": 152.55,
-     "gap_pct": 5.34,
+     "ticker": "NTAP",
+     "last": 199.28,
+     "pivot": 209.06,
+     "gap_pct": 4.91,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "APH",
+     "last": 83.92,
+     "pivot": 88.17,
+     "gap_pct": 5.06,
      "vol_ratio": 0.9
     },
     {
-     "ticker": "IVZ",
-     "last": 31.93,
-     "pivot": 33.66,
-     "gap_pct": 5.42,
+     "ticker": "DGX",
+     "last": 235.02,
+     "pivot": 247.19,
+     "gap_pct": 5.18,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "ADI",
+     "last": 378.78,
+     "pivot": 399.47,
+     "gap_pct": 5.46,
      "vol_ratio": 0.8
     },
     {
-     "ticker": "AAPL",
-     "last": 326.57,
-     "pivot": 344.27,
-     "gap_pct": 5.42,
-     "vol_ratio": 1.4
-    },
-    {
-     "ticker": "TRGP",
-     "last": 291.91,
-     "pivot": 307.94,
-     "gap_pct": 5.49,
-     "vol_ratio": 0.7
-    },
-    {
-     "ticker": "JNJ",
-     "last": 266.35,
-     "pivot": 281.07,
-     "gap_pct": 5.53,
-     "vol_ratio": 0.7
-    },
-    {
-     "ticker": "MCK",
-     "last": 880.86,
-     "pivot": 929.95,
-     "gap_pct": 5.57,
+     "ticker": "FFIV",
+     "last": 411.71,
+     "pivot": 435.0,
+     "gap_pct": 5.66,
      "vol_ratio": 0.8
     },
     {
      "ticker": "FANG",
-     "last": 205.39,
+     "last": 204.97,
      "pivot": 216.9,
-     "gap_pct": 5.6,
-     "vol_ratio": 1.0
-    },
-    {
-     "ticker": "IFF",
-     "last": 84.05,
-     "pivot": 89.32,
-     "gap_pct": 6.27,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "DGX",
-     "last": 231.14,
-     "pivot": 247.19,
-     "gap_pct": 6.94,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "HUM",
-     "last": 400.73,
-     "pivot": 428.88,
-     "gap_pct": 7.02,
-     "vol_ratio": 0.7
-    },
-    {
-     "ticker": "NWSA",
-     "last": 29.38,
-     "pivot": 31.55,
-     "gap_pct": 7.4,
+     "gap_pct": 5.82,
      "vol_ratio": 0.9
     },
     {
-     "ticker": "NVDA",
-     "last": 218.36,
-     "pivot": 234.76,
-     "gap_pct": 7.51,
-     "vol_ratio": 0.8
-    },
-    {
-     "ticker": "CTVA",
-     "last": 84.49,
-     "pivot": 90.87,
-     "gap_pct": 7.55,
-     "vol_ratio": 0.8
-    },
-    {
-     "ticker": "INCY",
-     "last": 123.28,
-     "pivot": 132.6,
-     "gap_pct": 7.56,
-     "vol_ratio": 0.9
-    },
-    {
-     "ticker": "BMY",
-     "last": 63.75,
-     "pivot": 68.64,
-     "gap_pct": 7.67,
+     "ticker": "JNJ",
+     "last": 265.58,
+     "pivot": 281.07,
+     "gap_pct": 5.83,
      "vol_ratio": 0.6
     },
     {
-     "ticker": "AIZ",
-     "last": 280.97,
-     "pivot": 303.0,
-     "gap_pct": 7.84,
+     "ticker": "TRV",
+     "last": 375.2,
+     "pivot": 397.34,
+     "gap_pct": 5.9,
+     "vol_ratio": 0.9
+    },
+    {
+     "ticker": "TRGP",
+     "last": 290.25,
+     "pivot": 307.94,
+     "gap_pct": 6.09,
      "vol_ratio": 0.7
     },
     {
-     "ticker": "MRK",
-     "last": 144.71,
-     "pivot": 156.92,
-     "gap_pct": 8.44,
-     "vol_ratio": 0.8
+     "ticker": "GILD",
+     "last": 143.72,
+     "pivot": 152.55,
+     "gap_pct": 6.14,
+     "vol_ratio": 0.7
     }
    ]
   },
@@ -559,7 +557,7 @@
    "mode": "breakout",
    "summary": {
     "open_count": 10,
-    "avg_ret": 2.72,
+    "avg_ret": 6.62,
     "closed_count": 5,
     "win_rate": 0.0,
     "realized": -89.3
@@ -569,91 +567,91 @@
      "ticker": "PFG",
      "entry_date": "2026-09-03",
      "entry": 118.51,
-     "last": 114.96,
-     "ret_pct": -3.0,
-     "days": 5,
-     "sub": "150일선 $101.32"
+     "last": 116.17,
+     "ret_pct": -1.98,
+     "days": 6,
+     "sub": "150일선 $101.48"
     },
     {
      "ticker": "CF",
      "entry_date": "2026-09-01",
      "entry": 135.6,
-     "last": 135.11,
-     "ret_pct": -0.36,
-     "days": 7,
-     "sub": "150일선 $117.04"
+     "last": 133.07,
+     "ret_pct": -1.87,
+     "days": 8,
+     "sub": "150일선 $117.33"
     },
     {
      "ticker": "DE",
      "entry_date": "2026-09-01",
      "entry": 676.08,
-     "last": 677.94,
-     "ret_pct": 0.28,
-     "days": 7,
-     "sub": "150일선 $596.40"
+     "last": 675.74,
+     "ret_pct": -0.05,
+     "days": 8,
+     "sub": "150일선 $597.16"
     },
     {
      "ticker": "MRNA",
      "entry_date": "2026-07-02",
      "entry": 79.76,
-     "last": 136.62,
-     "ret_pct": 71.29,
-     "days": 50,
-     "sub": "150일선 $63.90"
+     "last": 143.97,
+     "ret_pct": 80.5,
+     "days": 51,
+     "sub": "150일선 $64.59"
     },
     {
      "ticker": "MRVL",
      "entry_date": "2026-06-02",
      "entry": 290.79,
-     "last": 226.96,
-     "ret_pct": -21.95,
-     "days": 72,
-     "sub": "150일선 $176.92"
+     "last": 236.1,
+     "ret_pct": -18.81,
+     "days": 73,
+     "sub": "150일선 $178.00"
     },
     {
      "ticker": "ARM",
      "entry_date": "2026-06-01",
      "entry": 408.85,
-     "last": 254.18,
-     "ret_pct": -37.83,
-     "days": 73,
-     "sub": "150일선 $231.78"
+     "last": 264.79,
+     "ret_pct": -35.24,
+     "days": 74,
+     "sub": "150일선 $232.81"
     },
     {
      "ticker": "DELL",
      "entry_date": "2026-06-01",
      "entry": 465.96,
-     "last": 506.62,
-     "ret_pct": 8.73,
-     "days": 73,
-     "sub": "150일선 $303.74"
+     "last": 567.29,
+     "ret_pct": 21.75,
+     "days": 74,
+     "sub": "150일선 $306.75"
     },
     {
      "ticker": "DDOG",
      "entry_date": "2026-06-01",
      "entry": 277.49,
-     "last": 221.72,
-     "ret_pct": -20.1,
-     "days": 73,
-     "sub": "150일선 $189.82"
+     "last": 221.21,
+     "ret_pct": -20.28,
+     "days": 74,
+     "sub": "150일선 $190.58"
     },
     {
      "ticker": "HPE",
      "entry_date": "2026-06-01",
      "entry": 47.0,
-     "last": 55.22,
-     "ret_pct": 17.49,
-     "days": 73,
-     "sub": "150일선 $37.39"
+     "last": 62.09,
+     "ret_pct": 32.11,
+     "days": 74,
+     "sub": "150일선 $37.65"
     },
     {
      "ticker": "PANW",
      "entry_date": "2026-06-01",
      "entry": 300.48,
-     "last": 338.49,
-     "ret_pct": 12.65,
-     "days": 73,
-     "sub": "150일선 $251.53"
+     "last": 330.65,
+     "ret_pct": 10.04,
+     "days": 74,
+     "sub": "150일선 $252.71"
     }
    ],
    "closed": [
@@ -696,284 +694,284 @@
    "today_buys": [],
    "watch": [
     {
-     "ticker": "AES",
-     "last": 14.8,
-     "pivot": 14.85,
-     "gap_pct": 0.34,
-     "vol_ratio": 1.2
+     "ticker": "EXPD",
+     "last": 192.6,
+     "pivot": 192.28,
+     "gap_pct": -0.17,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "DVN",
-     "last": 50.02,
-     "pivot": 49.72,
-     "gap_pct": -0.6,
-     "vol_ratio": 1.5
+     "last": 50.23,
+     "pivot": 50.05,
+     "gap_pct": -0.36,
+     "vol_ratio": 0.9
     },
     {
-     "ticker": "HPQ",
-     "last": 32.73,
-     "pivot": 32.93,
-     "gap_pct": 0.61,
+     "ticker": "AES",
+     "last": 14.79,
+     "pivot": 14.85,
+     "gap_pct": 0.41,
      "vol_ratio": 1.0
     },
     {
-     "ticker": "COP",
-     "last": 137.04,
-     "pivot": 137.87,
-     "gap_pct": 0.61,
-     "vol_ratio": 0.9
-    },
-    {
-     "ticker": "TECH",
-     "last": 72.08,
-     "pivot": 72.58,
-     "gap_pct": 0.69,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "VLO",
-     "last": 385.43,
-     "pivot": 389.18,
-     "gap_pct": 0.97,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "ADM",
-     "last": 86.91,
-     "pivot": 87.9,
-     "gap_pct": 1.14,
-     "vol_ratio": 1.0
-    },
-    {
-     "ticker": "CVX",
-     "last": 212.76,
-     "pivot": 215.28,
-     "gap_pct": 1.18,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "APA",
-     "last": 44.53,
-     "pivot": 45.13,
-     "gap_pct": 1.35,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "BG",
-     "last": 124.59,
-     "pivot": 126.49,
-     "gap_pct": 1.53,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "EXPD",
-     "last": 189.32,
-     "pivot": 192.28,
-     "gap_pct": 1.56,
-     "vol_ratio": 0.9
-    },
-    {
-     "ticker": "OXY",
-     "last": 61.16,
-     "pivot": 62.21,
-     "gap_pct": 1.72,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "AWK",
-     "last": 139.84,
-     "pivot": 142.27,
-     "gap_pct": 1.74,
-     "vol_ratio": 0.9
+     "ticker": "BBY",
+     "last": 90.8,
+     "pivot": 91.27,
+     "gap_pct": 0.52,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "VZ",
-     "last": 49.97,
+     "last": 50.61,
      "pivot": 50.93,
-     "gap_pct": 1.92,
+     "gap_pct": 0.63,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "TECH",
+     "last": 72.12,
+     "pivot": 72.58,
+     "gap_pct": 0.64,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "VLO",
+     "last": 390.42,
+     "pivot": 393.54,
+     "gap_pct": 0.8,
+     "vol_ratio": 1.2
+    },
+    {
+     "ticker": "COP",
+     "last": 137.35,
+     "pivot": 138.89,
+     "gap_pct": 1.12,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "OXY",
+     "last": 61.46,
+     "pivot": 62.24,
+     "gap_pct": 1.27,
+     "vol_ratio": 0.9
+    },
+    {
+     "ticker": "STT",
+     "last": 193.4,
+     "pivot": 195.93,
+     "gap_pct": 1.31,
+     "vol_ratio": 0.9
+    },
+    {
+     "ticker": "T",
+     "last": 26.06,
+     "pivot": 26.44,
+     "gap_pct": 1.46,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "CVX",
+     "last": 214.06,
+     "pivot": 217.4,
+     "gap_pct": 1.56,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "XOM",
+     "last": 165.99,
+     "pivot": 168.64,
+     "gap_pct": 1.6,
      "vol_ratio": 0.8
     },
     {
      "ticker": "PSX",
-     "last": 258.51,
-     "pivot": 263.66,
-     "gap_pct": 1.99,
-     "vol_ratio": 1.1
+     "last": 259.47,
+     "pivot": 263.76,
+     "gap_pct": 1.65,
+     "vol_ratio": 1.0
     },
     {
-     "ticker": "BNY",
-     "last": 162.59,
-     "pivot": 165.84,
-     "gap_pct": 2.0,
-     "vol_ratio": 0.9
-    },
-    {
-     "ticker": "XOM",
-     "last": 165.23,
-     "pivot": 168.64,
-     "gap_pct": 2.06,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "STT",
-     "last": 191.3,
-     "pivot": 195.93,
-     "gap_pct": 2.42,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "MPC",
-     "last": 392.42,
-     "pivot": 402.0,
-     "gap_pct": 2.44,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "WBD",
-     "last": 28.2,
-     "pivot": 28.99,
-     "gap_pct": 2.8,
-     "vol_ratio": 1.6
-    },
-    {
-     "ticker": "RSG",
-     "last": 221.08,
-     "pivot": 228.22,
-     "gap_pct": 3.23,
-     "vol_ratio": 1.2
-    },
-    {
-     "ticker": "AMP",
-     "last": 553.53,
-     "pivot": 572.56,
-     "gap_pct": 3.44,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "GPC",
-     "last": 134.16,
-     "pivot": 138.81,
-     "gap_pct": 3.47,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "T",
-     "last": 25.55,
-     "pivot": 26.44,
-     "gap_pct": 3.48,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "BBY",
-     "last": 88.09,
-     "pivot": 91.27,
-     "gap_pct": 3.61,
+     "ticker": "AMT",
+     "last": 177.85,
+     "pivot": 180.98,
+     "gap_pct": 1.76,
      "vol_ratio": 0.7
     },
     {
-     "ticker": "JPM",
-     "last": 353.56,
-     "pivot": 366.5,
-     "gap_pct": 3.66,
-     "vol_ratio": 0.6
+     "ticker": "BNY",
+     "last": 162.66,
+     "pivot": 165.84,
+     "gap_pct": 1.95,
+     "vol_ratio": 0.7
     },
     {
-     "ticker": "BAC",
-     "last": 62.56,
-     "pivot": 64.9,
-     "gap_pct": 3.74,
+     "ticker": "MPC",
+     "last": 395.93,
+     "pivot": 405.13,
+     "gap_pct": 2.32,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "ADM",
+     "last": 86.72,
+     "pivot": 88.75,
+     "gap_pct": 2.34,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "RSG",
+     "last": 222.74,
+     "pivot": 228.22,
+     "gap_pct": 2.46,
      "vol_ratio": 0.9
     },
     {
-     "ticker": "C",
-     "last": 138.5,
-     "pivot": 143.98,
-     "gap_pct": 3.96,
+     "ticker": "AMP",
+     "last": 557.61,
+     "pivot": 572.56,
+     "gap_pct": 2.68,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "CDW",
+     "last": 153.79,
+     "pivot": 158.05,
+     "gap_pct": 2.77,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "JPM",
+     "last": 356.23,
+     "pivot": 366.5,
+     "gap_pct": 2.88,
      "vol_ratio": 0.7
     },
     {
      "ticker": "NTRS",
-     "last": 187.19,
+     "last": 189.19,
      "pivot": 194.86,
-     "gap_pct": 4.1,
-     "vol_ratio": 1.0
-    },
-    {
-     "ticker": "EOG",
-     "last": 147.46,
-     "pivot": 153.67,
-     "gap_pct": 4.21,
-     "vol_ratio": 1.1
-    },
-    {
-     "ticker": "MET",
-     "last": 96.78,
-     "pivot": 100.93,
-     "gap_pct": 4.29,
-     "vol_ratio": 0.6
-    },
-    {
-     "ticker": "OKE",
-     "last": 95.72,
-     "pivot": 99.85,
-     "gap_pct": 4.31,
+     "gap_pct": 3.0,
      "vol_ratio": 0.7
     },
     {
-     "ticker": "VRSN",
-     "last": 288.85,
-     "pivot": 302.11,
-     "gap_pct": 4.59,
+     "ticker": "APA",
+     "last": 44.73,
+     "pivot": 46.1,
+     "gap_pct": 3.06,
      "vol_ratio": 0.8
     },
     {
-     "ticker": "CPAY",
-     "last": 408.47,
-     "pivot": 427.46,
-     "gap_pct": 4.65,
+     "ticker": "VRSN",
+     "last": 292.71,
+     "pivot": 302.11,
+     "gap_pct": 3.21,
+     "vol_ratio": 0.7
+    },
+    {
+     "ticker": "OKE",
+     "last": 96.62,
+     "pivot": 99.85,
+     "gap_pct": 3.34,
+     "vol_ratio": 0.8
+    },
+    {
+     "ticker": "WBD",
+     "last": 28.04,
+     "pivot": 28.99,
+     "gap_pct": 3.39,
+     "vol_ratio": 0.6
+    },
+    {
+     "ticker": "AWK",
+     "last": 137.69,
+     "pivot": 142.37,
+     "gap_pct": 3.4,
+     "vol_ratio": 0.6
+    },
+    {
+     "ticker": "BAC",
+     "last": 62.69,
+     "pivot": 64.9,
+     "gap_pct": 3.52,
      "vol_ratio": 0.9
+    },
+    {
+     "ticker": "AAPL",
+     "last": 332.27,
+     "pivot": 344.27,
+     "gap_pct": 3.61,
+     "vol_ratio": 1.0
+    },
+    {
+     "ticker": "C",
+     "last": 138.82,
+     "pivot": 143.98,
+     "gap_pct": 3.72,
+     "vol_ratio": 0.7
     },
     {
      "ticker": "ELV",
-     "last": 416.54,
-     "pivot": 436.24,
-     "gap_pct": 4.73,
-     "vol_ratio": 1.5
+     "last": 418.72,
+     "pivot": 434.35,
+     "gap_pct": 3.73,
+     "vol_ratio": 1.1
+    },
+    {
+     "ticker": "IQV",
+     "last": 261.77,
+     "pivot": 271.8,
+     "gap_pct": 3.83,
+     "vol_ratio": 1.1
+    },
+    {
+     "ticker": "GPC",
+     "last": 133.68,
+     "pivot": 138.81,
+     "gap_pct": 3.84,
+     "vol_ratio": 0.5
+    },
+    {
+     "ticker": "MET",
+     "last": 97.14,
+     "pivot": 100.93,
+     "gap_pct": 3.9,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "BIIB",
-     "last": 215.43,
+     "last": 217.15,
      "pivot": 225.8,
-     "gap_pct": 4.81,
-     "vol_ratio": 0.9
+     "gap_pct": 3.98,
+     "vol_ratio": 1.0
     },
     {
      "ticker": "ABBV",
-     "last": 255.0,
+     "last": 257.12,
      "pivot": 267.47,
-     "gap_pct": 4.89,
+     "gap_pct": 4.03,
      "vol_ratio": 0.8
     },
     {
      "ticker": "V",
-     "last": 367.21,
+     "last": 370.45,
      "pivot": 385.57,
-     "gap_pct": 5.0,
+     "gap_pct": 4.08,
      "vol_ratio": 0.5
     },
     {
-     "ticker": "MSFT",
-     "last": 492.44,
-     "pivot": 517.78,
-     "gap_pct": 5.15,
-     "vol_ratio": 0.5
+     "ticker": "BG",
+     "last": 122.41,
+     "pivot": 127.47,
+     "gap_pct": 4.13,
+     "vol_ratio": 0.8
     },
     {
      "ticker": "SYY",
-     "last": 82.31,
+     "last": 83.21,
      "pivot": 86.65,
-     "gap_pct": 5.27,
-     "vol_ratio": 1.4
+     "gap_pct": 4.13,
+     "vol_ratio": 1.1
     }
    ]
   },
@@ -983,7 +981,7 @@
    "mode": "rank",
    "summary": {
     "open_count": 10,
-    "avg_ret": -1.56,
+    "avg_ret": 0.93,
     "closed_count": 16,
     "win_rate": 18.8,
     "realized": -216.1
@@ -993,10 +991,10 @@
      "ticker": "LITE",
      "entry_date": "2026-09-01",
      "entry": 868.95,
-     "last": 935.7,
-     "ret_pct": 7.68,
-     "days": 7,
-     "sub": "현재 1위 · 12개월 모멘텀 +441%",
+     "last": 927.03,
+     "ret_pct": 6.68,
+     "days": 8,
+     "sub": "현재 1위 · 12개월 모멘텀 +466%",
      "rank": 1,
      "drop": false
     },
@@ -1004,10 +1002,10 @@
      "ticker": "STX",
      "entry_date": "2026-08-03",
      "entry": 831.06,
-     "last": 862.33,
-     "ret_pct": 3.76,
-     "days": 28,
-     "sub": "현재 3위 · 12개월 모멘텀 +332%",
+     "last": 830.17,
+     "ret_pct": -0.11,
+     "days": 29,
+     "sub": "현재 3위 · 12개월 모멘텀 +359%",
      "rank": 3,
      "drop": false
     },
@@ -1015,10 +1013,10 @@
      "ticker": "INTC",
      "entry_date": "2026-09-01",
      "entry": 88.97,
-     "last": 100.32,
-     "ret_pct": 12.76,
-     "days": 7,
-     "sub": "현재 4위 · 12개월 모멘텀 +300%",
+     "last": 102.94,
+     "ret_pct": 15.7,
+     "days": 8,
+     "sub": "현재 4위 · 12개월 모멘텀 +308%",
      "rank": 4,
      "drop": false
     },
@@ -1026,10 +1024,10 @@
      "ticker": "DELL",
      "entry_date": "2026-07-01",
      "entry": 425.25,
-     "last": 506.62,
-     "ret_pct": 19.13,
-     "days": 51,
-     "sub": "현재 5위 · 12개월 모멘텀 +268%",
+     "last": 567.29,
+     "ret_pct": 33.4,
+     "days": 52,
+     "sub": "현재 5위 · 12개월 모멘텀 +294%",
      "rank": 5,
      "drop": false
     },
@@ -1037,10 +1035,10 @@
      "ticker": "COHR",
      "entry_date": "2026-06-12",
      "entry": 385.03,
-     "last": 293.17,
-     "ret_pct": -23.86,
-     "days": 64,
-     "sub": "현재 6위 · 12개월 모멘텀 +231%",
+     "last": 305.37,
+     "ret_pct": -20.69,
+     "days": 65,
+     "sub": "현재 6위 · 12개월 모멘텀 +244%",
      "rank": 6,
      "drop": false
     },
@@ -1048,55 +1046,55 @@
      "ticker": "TER",
      "entry_date": "2026-06-12",
      "entry": 403.2,
-     "last": 370.19,
-     "ret_pct": -8.19,
-     "days": 64,
-     "sub": "현재 7위 · 12개월 모멘텀 +230%",
+     "last": 379.72,
+     "ret_pct": -5.82,
+     "days": 65,
+     "sub": "현재 7위 · 12개월 모멘텀 +242%",
      "rank": 7,
-     "drop": false
-    },
-    {
-     "ticker": "AMAT",
-     "entry_date": "2026-06-12",
-     "entry": 567.25,
-     "last": 454.01,
-     "ret_pct": -19.96,
-     "days": 64,
-     "sub": "현재 8위 · 12개월 모멘텀 +223%",
-     "rank": 8,
      "drop": false
     },
     {
      "ticker": "MRVL",
      "entry_date": "2026-09-01",
      "entry": 210.39,
-     "last": 226.96,
-     "ret_pct": 7.88,
-     "days": 7,
-     "sub": "현재 9위 · 12개월 모멘텀 +218%",
-     "rank": 9,
-     "drop": false
-    },
-    {
-     "ticker": "CIEN",
-     "entry_date": "2026-08-03",
-     "entry": 390.76,
-     "last": 334.56,
-     "ret_pct": -14.38,
-     "days": 28,
-     "sub": "현재 10위 · 12개월 모멘텀 +217%",
-     "rank": 10,
+     "last": 236.1,
+     "ret_pct": 12.22,
+     "days": 8,
+     "sub": "현재 8위 · 12개월 모멘텀 +224%",
+     "rank": 8,
      "drop": false
     },
     {
      "ticker": "NBIS",
      "entry_date": "2026-07-01",
      "entry": 229.18,
-     "last": 228.11,
-     "ret_pct": -0.47,
-     "days": 51,
-     "sub": "현재 28위 · 12개월 모멘텀 +102%",
-     "rank": 28,
+     "last": 224.55,
+     "ret_pct": -2.02,
+     "days": 52,
+     "sub": "현재 11위 · 12개월 모멘텀 +178%",
+     "rank": 11,
+     "drop": true
+    },
+    {
+     "ticker": "AMAT",
+     "entry_date": "2026-06-12",
+     "entry": 567.25,
+     "last": 456.49,
+     "ret_pct": -19.53,
+     "days": 65,
+     "sub": "월말 리밸런스",
+     "rank": null,
+     "drop": true
+    },
+    {
+     "ticker": "CIEN",
+     "entry_date": "2026-08-03",
+     "entry": 390.76,
+     "last": 349.54,
+     "ret_pct": -10.55,
+     "days": 29,
+     "sub": "월말 리밸런스",
+     "rank": null,
      "drop": true
     }
    ],
@@ -1218,212 +1216,212 @@
    "watch": [
     {
      "ticker": "LITE",
-     "last": 935.7,
+     "last": 927.03,
      "rank": 1,
-     "mom_pct": 440.8,
+     "mom_pct": 465.5,
      "held": true
     },
     {
      "ticker": "WDC",
-     "last": 460.93,
+     "last": 447.18,
      "rank": 2,
-     "mom_pct": 363.9,
+     "mom_pct": 378.6,
      "held": false
     },
     {
      "ticker": "STX",
-     "last": 862.33,
+     "last": 830.17,
      "rank": 3,
-     "mom_pct": 331.8,
+     "mom_pct": 358.7,
      "held": true
     },
     {
      "ticker": "INTC",
-     "last": 100.32,
+     "last": 102.94,
      "rank": 4,
-     "mom_pct": 299.8,
+     "mom_pct": 307.5,
      "held": true
     },
     {
      "ticker": "DELL",
-     "last": 506.62,
+     "last": 567.29,
      "rank": 5,
-     "mom_pct": 268.2,
+     "mom_pct": 294.3,
      "held": true
     },
     {
      "ticker": "COHR",
-     "last": 293.17,
+     "last": 305.37,
      "rank": 6,
-     "mom_pct": 231.2,
+     "mom_pct": 243.6,
      "held": true
     },
     {
      "ticker": "TER",
-     "last": 370.19,
+     "last": 379.72,
      "rank": 7,
-     "mom_pct": 230.4,
-     "held": true
-    },
-    {
-     "ticker": "AMAT",
-     "last": 454.01,
-     "rank": 8,
-     "mom_pct": 222.9,
+     "mom_pct": 242.4,
      "held": true
     },
     {
      "ticker": "MRVL",
-     "last": 226.96,
-     "rank": 9,
-     "mom_pct": 218.3,
+     "last": 236.1,
+     "rank": 8,
+     "mom_pct": 224.2,
      "held": true
-    },
-    {
-     "ticker": "CIEN",
-     "last": 334.56,
-     "rank": 10,
-     "mom_pct": 217.2,
-     "held": true
-    },
-    {
-     "ticker": "AMD",
-     "last": 503.6,
-     "rank": 11,
-     "mom_pct": 204.4,
-     "held": false
     },
     {
      "ticker": "LRCX",
-     "last": 298.01,
+     "last": 298.22,
+     "rank": 9,
+     "mom_pct": 205.4,
+     "held": false
+    },
+    {
+     "ticker": "AMD",
+     "last": 516.13,
+     "rank": 10,
+     "mom_pct": 202.7,
+     "held": false
+    },
+    {
+     "ticker": "NBIS",
+     "last": 224.55,
+     "rank": 11,
+     "mom_pct": 177.5,
+     "held": true
+    },
+    {
+     "ticker": "HPE",
+     "last": 62.09,
      "rank": 12,
-     "mom_pct": 196.6,
+     "mom_pct": 145.6,
      "held": false
     },
     {
      "ticker": "FIX",
-     "last": 1590.81,
+     "last": 1690.82,
      "rank": 13,
-     "mom_pct": 138.3,
-     "held": false
-    },
-    {
-     "ticker": "HPE",
-     "last": 55.22,
-     "rank": 14,
-     "mom_pct": 132.5,
+     "mom_pct": 131.5,
      "held": false
     },
     {
      "ticker": "ASML",
-     "last": 1687.43,
+     "last": 1698.3,
+     "rank": 14,
+     "mom_pct": 129.7,
+     "held": false
+    },
+    {
+     "ticker": "GLW",
+     "last": 166.4,
      "rank": 15,
      "mom_pct": 125.0,
      "held": false
     },
     {
-     "ticker": "VRT",
-     "last": 248.13,
+     "ticker": "KLAC",
+     "last": 180.64,
      "rank": 16,
-     "mom_pct": 124.7,
-     "held": false
-    },
-    {
-     "ticker": "GLW",
-     "last": 163.12,
-     "rank": 17,
-     "mom_pct": 121.4,
+     "mom_pct": 124.2,
      "held": false
     },
     {
      "ticker": "WBD",
-     "last": 28.2,
-     "rank": 18,
-     "mom_pct": 120.8,
-     "held": false
-    },
-    {
-     "ticker": "KLAC",
-     "last": 177.18,
-     "rank": 19,
-     "mom_pct": 119.4,
+     "last": 28.04,
+     "rank": 17,
+     "mom_pct": 120.5,
      "held": false
     },
     {
      "ticker": "FLEX",
-     "last": 108.01,
-     "rank": 20,
-     "mom_pct": 117.8,
-     "held": false
-    },
-    {
-     "ticker": "CRWD",
-     "last": 208.86,
-     "rank": 21,
-     "mom_pct": 109.6,
+     "last": 115.78,
+     "rank": 18,
+     "mom_pct": 114.5,
      "held": false
     },
     {
      "ticker": "CNC",
-     "last": 65.4,
-     "rank": 22,
-     "mom_pct": 108.9,
-     "held": false
-    },
-    {
-     "ticker": "STLD",
-     "last": 237.08,
-     "rank": 23,
-     "mom_pct": 104.8,
+     "last": 66.42,
+     "rank": 19,
+     "mom_pct": 114.5,
      "held": false
     },
     {
      "ticker": "VLO",
-     "last": 385.43,
-     "rank": 24,
-     "mom_pct": 104.4,
+     "last": 390.42,
+     "rank": 20,
+     "mom_pct": 112.8,
      "held": false
     },
     {
-     "ticker": "CAT",
-     "last": 805.0,
-     "rank": 25,
-     "mom_pct": 103.5,
+     "ticker": "VRT",
+     "last": 257.06,
+     "rank": 21,
+     "mom_pct": 111.1,
+     "held": false
+    },
+    {
+     "ticker": "CRWD",
+     "last": 206.74,
+     "rank": 22,
+     "mom_pct": 108.8,
      "held": false
     },
     {
      "ticker": "KEYS",
-     "last": 325.65,
-     "rank": 26,
-     "mom_pct": 103.3,
+     "last": 338.64,
+     "rank": 23,
+     "mom_pct": 108.3,
+     "held": false
+    },
+    {
+     "ticker": "CAT",
+     "last": 818.57,
+     "rank": 24,
+     "mom_pct": 104.1,
+     "held": false
+    },
+    {
+     "ticker": "JBHT",
+     "last": 270.45,
+     "rank": 25,
+     "mom_pct": 103.2,
      "held": false
     },
     {
      "ticker": "FTNT",
-     "last": 158.85,
-     "rank": 27,
-     "mom_pct": 102.8,
+     "last": 156.07,
+     "rank": 26,
+     "mom_pct": 102.4,
      "held": false
     },
     {
-     "ticker": "NBIS",
-     "last": 228.11,
-     "rank": 28,
-     "mom_pct": 101.9,
-     "held": true
-    },
-    {
-     "ticker": "NUE",
-     "last": 255.46,
-     "rank": 29,
-     "mom_pct": 95.4,
+     "ticker": "STLD",
+     "last": 239.79,
+     "rank": 27,
+     "mom_pct": 100.7,
      "held": false
     },
     {
      "ticker": "PANW",
-     "last": 338.49,
-     "rank": 30,
+     "last": 330.65,
+     "rank": 28,
+     "mom_pct": 96.1,
+     "held": false
+    },
+    {
+     "ticker": "MPC",
+     "last": 395.93,
+     "rank": 29,
      "mom_pct": 94.3,
+     "held": false
+    },
+    {
+     "ticker": "NUE",
+     "last": 259.43,
+     "rank": 30,
+     "mom_pct": 94.1,
      "held": false
     }
    ],
@@ -1432,122 +1430,121 @@
   }
  },
  "names": {
-  "KIM": "킴코리얼티 / 상업용리츠",
-  "APA": "APA / 석유",
-  "BBY": "베스트바이 / 소매",
-  "CTVA": "코테바 / 농업화학",
-  "KLAC": "KLA / 반도체장비",
-  "V": "비자 / 결제",
-  "SYY": "시스코 / 식품유통",
-  "IP": "인터내셔널페이퍼 / 제지",
-  "ELV": "엘레반스헬스 / 헬스케어보험",
-  "AMAT": "어플라이드머트리얼즈 / 반도체장비",
-  "AWK": "아메리칸워터웍스 / 유틸리티(수도)",
-  "WBD": "워너브라더스 디스커버리 / 미디어",
-  "MRVL": "마벨 / 반도체",
   "CNC": "센틴 / 헬스케어보험",
-  "MPC": "마라톤페트롤리엄 / 정유",
-  "WAB": "왭텍 / 철도장비",
-  "DGX": "퀘스트다이어그노스틱스 / 진단검사",
-  "DVN": "데번에너지 / 석유",
-  "DDOG": "데이터독 / 소프트웨어",
-  "DELL": "델 / IT기기",
-  "PLD": "프로로지스 / 물류리츠",
-  "C": "씨티그룹 / 은행",
-  "FIX": "컴포트시스템스 / 공조설비",
-  "ASML": "ASML / 반도체장비",
-  "MTB": "M&T뱅크 / 은행",
-  "VRSN": "베리사인 / 인터넷인프라",
-  "ALB": "알버말 / 화학",
-  "RSG": "리퍼블릭 서비스 / 환경(폐기물)",
-  "CF": "CF인더스트리스 / 화학(비료)",
-  "AMP": "아메리프라이즈파이낸셜 / 자산운용",
-  "HPQ": "HP / IT기기",
-  "DE": "디어 / 농기계",
-  "NVDA": "엔비디아 / 반도체",
-  "NBIS": "네비우스 / AI클라우드",
-  "VZ": "버라이즌 / 통신",
-  "AAPL": "애플 / IT기기",
-  "EOG": "EOG리소시스 / 석유·가스",
-  "FTNT": "포티넷 / 보안SW",
-  "NWSA": "뉴스코프 / 미디어",
-  "BIIB": "바이오젠 / 바이오",
+  "VRT": "버티브 / 데이터센터설비",
+  "XOM": "엑슨모빌 / 석유",
+  "SWKS": "스카이웍스 / 반도체",
+  "V": "비자 / 결제",
+  "ABBV": "애브비 / 제약",
+  "IVZ": "인베스코 / 자산운용",
+  "EXPD": "익스페디터스 / 물류",
+  "TECH": "바이오테크네 / 바이오",
+  "FANG": "다이아몬드백에너지 / 석유",
+  "INCY": "인사이트 / 바이오",
+  "ELV": "엘레반스헬스 / 헬스케어보험",
+  "APA": "APA / 석유",
+  "BAC": "뱅크오브아메리카 / 은행",
+  "ARM": "ARM / 반도체설계",
   "INTC": "인텔 / 반도체",
   "EMR": "에머슨 / 산업자동화",
-  "ALAB": "아스테라랩스 / AI반도체",
-  "MSFT": "마이크로소프트 / 소프트웨어",
-  "GILD": "길리어드 / 바이오",
-  "T": "AT&T / 통신",
-  "PSX": "필립스66 / 정유",
-  "KO": "코카콜라 / 음료",
-  "BAC": "뱅크오브아메리카 / 은행",
-  "DXCM": "덱스콤 / 의료기기(혈당)",
-  "STLD": "스틸다이내믹스 / 철강",
-  "SWKS": "스카이웍스 / 반도체",
-  "STT": "스테이트스트리트 / 수탁은행",
-  "MET": "메트라이프 / 보험",
-  "NDSN": "노드슨 / 산업재",
-  "IVZ": "인베스코 / 자산운용",
-  "JBHT": "JB헌트 / 운송·물류",
-  "PANW": "팔로알토네트웍스 / 보안SW",
+  "TRV": "트래블러스 / 보험",
   "GLW": "코닝 / 소재(유리)",
-  "OXY": "옥시덴탈 페트롤리엄 / 석유",
-  "HPE": "HPE / IT인프라",
-  "AMD": "AMD / 반도체",
-  "VLO": "발레로 에너지 / 정유",
-  "CPAY": "코페이 / 결제",
-  "VRT": "버티브 / 데이터센터설비",
-  "BNY": "뱅크오브뉴욕멜론 / 수탁은행",
-  "CVX": "셰브론 / 석유",
-  "BMY": "브리스톨마이어스스큅 / 제약",
-  "HUM": "휴매나 / 건강보험",
-  "ARM": "ARM / 반도체설계",
-  "FLEX": "플렉스 / 전자제조(EMS)",
-  "GOOGL": "알파벳(구글) / 인터넷",
   "CRL": "찰스리버래버러토리스 / 바이오(임상수탁)",
   "CRWD": "크라우드스트라이크 / 보안SW",
-  "FRT": "페더럴리얼티 / 상업용리츠",
-  "TER": "테러다인 / 반도체장비",
-  "TECH": "바이오테크네 / 바이오",
-  "PFG": "프린시펄파이낸셜 / 보험·자산운용",
-  "MGM": "MGM리조트 / 카지노·호텔",
-  "MCK": "맥케슨 / 의약품유통",
-  "AES": "AES / 유틸리티(전력)",
-  "COP": "코노코필립스 / 석유",
-  "NEM": "뉴몬트 / 금광",
-  "ADM": "아처대니얼스미들랜드 / 곡물·식품",
-  "ABBV": "애브비 / 제약",
-  "GPC": "제뉴인파츠 / 자동차부품",
-  "CHRW": "CH로빈슨 / 물류",
+  "FFIV": "F5 / 네트워크장비",
   "CFG": "시티즌스파이낸셜 / 은행",
-  "BG": "번지글로벌 / 식품(농산물)",
-  "TRGP": "타가 리소시스 / 에너지(미드스트림)",
-  "CAT": "캐터필러 / 건설기계",
-  "IFF": "인터내셔널플레이버 / 화학(향료)",
-  "JNJ": "존슨앤존슨 / 제약·헬스케어",
-  "MRNA": "모더나 / 바이오",
-  "LITE": "루멘텀 / 광부품",
-  "STX": "시게이트 / 스토리지",
-  "NUE": "뉴코 / 철강",
-  "SW": "스머핏 웨스트록 / 포장재",
-  "MPWR": "모놀리식파워 / 반도체",
-  "ANET": "아리스타네트웍스 / 네트워크장비",
-  "COHR": "코히런트 / 광부품",
-  "NTRS": "노던트러스트 / 수탁은행",
-  "OKE": "원오크 / 에너지(미드스트림)",
-  "WDC": "웨스턴디지털 / 스토리지",
-  "INCY": "인사이트 / 바이오",
-  "JPM": "JP모건 / 은행",
-  "AIZ": "어슈어런트 / 보험",
-  "MRK": "머크 / 제약",
-  "FANG": "다이아몬드백에너지 / 석유",
-  "XOM": "엑슨모빌 / 석유",
-  "AVGO": "브로드컴 / 반도체",
+  "DXCM": "덱스콤 / 의료기기(혈당)",
+  "ASML": "ASML / 반도체장비",
   "CDNS": "케이던스 / 반도체설계SW",
-  "CIEN": "시에나 / 통신장비",
-  "CASY": "케이시스 / 편의점·소매",
-  "EXPD": "익스페디터스 / 물류",
+  "PANW": "팔로알토네트웍스 / 보안SW",
+  "CAT": "캐터필러 / 건설기계",
+  "AMT": "아메리칸타워 / 통신타워리츠",
+  "KIM": "킴코리얼티 / 상업용리츠",
+  "LITE": "루멘텀 / 광부품",
+  "MPC": "마라톤페트롤리엄 / 정유",
+  "VLO": "발레로 에너지 / 정유",
+  "AES": "AES / 유틸리티(전력)",
+  "MET": "메트라이프 / 보험",
+  "CHRW": "CH로빈슨 / 물류",
+  "WAB": "왭텍 / 철도장비",
+  "C": "씨티그룹 / 은행",
+  "BBY": "베스트바이 / 소매",
   "KEYS": "키사이트 / 계측장비",
-  "LRCX": "램리서치 / 반도체장비"
+  "COP": "코노코필립스 / 석유",
+  "KO": "코카콜라 / 음료",
+  "MTB": "M&T뱅크 / 은행",
+  "CDW": "CDW / IT유통",
+  "SW": "스머핏 웨스트록 / 포장재",
+  "T": "AT&T / 통신",
+  "BG": "번지글로벌 / 식품(농산물)",
+  "IP": "인터내셔널페이퍼 / 제지",
+  "NBIS": "네비우스 / AI클라우드",
+  "MGM": "MGM리조트 / 카지노·호텔",
+  "MPWR": "모놀리식파워 / 반도체",
+  "NTRS": "노던트러스트 / 수탁은행",
+  "STT": "스테이트스트리트 / 수탁은행",
+  "KLAC": "KLA / 반도체장비",
+  "HSIC": "헨리샤인 / 의료용품유통",
+  "FRT": "페더럴리얼티 / 상업용리츠",
+  "DGX": "퀘스트다이어그노스틱스 / 진단검사",
+  "JBHT": "JB헌트 / 운송·물류",
+  "BIIB": "바이오젠 / 바이오",
+  "GILD": "길리어드 / 바이오",
+  "EOG": "EOG리소시스 / 석유·가스",
+  "HPE": "HPE / IT인프라",
+  "AVGO": "브로드컴 / 반도체",
+  "STLD": "스틸다이내믹스 / 철강",
+  "PFG": "프린시펄파이낸셜 / 보험·자산운용",
+  "CIEN": "시에나 / 통신장비",
+  "HUM": "휴매나 / 건강보험",
+  "BNY": "뱅크오브뉴욕멜론 / 수탁은행",
+  "SYY": "시스코 / 식품유통",
+  "WBD": "워너브라더스 디스커버리 / 미디어",
+  "RSG": "리퍼블릭 서비스 / 환경(폐기물)",
+  "CPAY": "코페이 / 결제",
+  "NDSN": "노드슨 / 산업재",
+  "AMP": "아메리프라이즈파이낸셜 / 자산운용",
+  "FIX": "컴포트시스템스 / 공조설비",
+  "NUE": "뉴코 / 철강",
+  "STX": "시게이트 / 스토리지",
+  "PLD": "프로로지스 / 물류리츠",
+  "MRVL": "마벨 / 반도체",
+  "VZ": "버라이즌 / 통신",
+  "CF": "CF인더스트리스 / 화학(비료)",
+  "ADM": "아처대니얼스미들랜드 / 곡물·식품",
+  "ALB": "알버말 / 화학",
+  "OXY": "옥시덴탈 페트롤리엄 / 석유",
+  "DDOG": "데이터독 / 소프트웨어",
+  "NEM": "뉴몬트 / 금광",
+  "IQV": "아이큐비아 / 헬스케어(CRO)",
+  "CASY": "케이시스 / 편의점·소매",
+  "DE": "디어 / 농기계",
+  "FTNT": "포티넷 / 보안SW",
+  "ALAB": "아스테라랩스 / AI반도체",
+  "JNJ": "존슨앤존슨 / 제약·헬스케어",
+  "AAPL": "애플 / IT기기",
+  "AMD": "AMD / 반도체",
+  "VRSN": "베리사인 / 인터넷인프라",
+  "CVX": "셰브론 / 석유",
+  "JPM": "JP모건 / 은행",
+  "WDC": "웨스턴디지털 / 스토리지",
+  "NTAP": "넷앱 / 데이터스토리지",
+  "OKE": "원오크 / 에너지(미드스트림)",
+  "TRGP": "타가 리소시스 / 에너지(미드스트림)",
+  "DELL": "델 / IT기기",
+  "AMAT": "어플라이드머트리얼즈 / 반도체장비",
+  "ANET": "아리스타네트웍스 / 네트워크장비",
+  "GPC": "제뉴인파츠 / 자동차부품",
+  "APH": "앰페놀 / 전자부품",
+  "TER": "테러다인 / 반도체장비",
+  "ADI": "아나로그디바이스 / 반도체",
+  "FLEX": "플렉스 / 전자제조(EMS)",
+  "MRNA": "모더나 / 바이오",
+  "DVN": "데번에너지 / 석유",
+  "PSX": "필립스66 / 정유",
+  "AWK": "아메리칸워터웍스 / 유틸리티(수도)",
+  "LRCX": "램리서치 / 반도체장비",
+  "GOOGL": "알파벳(구글) / 인터넷",
+  "COHR": "코히런트 / 광부품"
  }
 }
