@@ -523,5 +523,6 @@
 "SHOP": "Shopify / 응용SW",
 "MSTR": "Strategy / 응용SW",
 "TWLO": "Twilio / 인프라SW",
-"TRI": "Thomson Reuters / 산업재"
+"TRI": "Thomson Reuters / 산업재",
+"OKTA": "Okta / 인프라SW"
 }
